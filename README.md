@@ -1,32 +1,36 @@
 # WeCode
 
-Individual academic project for learning Python, SQL and Git through short English lessons and practice. Submission target: **October 20, 2026, Asia/Almaty**; exact time is unknown.
+An English learning workspace for Python, SQL and Git. Individual academic project due October 20, 2026 (Asia/Almaty); exact submission time unknown.
 
-## Status
+## Current stage
 
-Repository setup and planning only. No application, dependency installation or runnable test suite exists yet. React/TypeScript, Python/FastAPI, SQLAlchemy and SQLite are **proposed**, not selected.
+Interactive frontend with a centralized typed mockService. React, TypeScript and Vite are selected; Python/FastAPI, SQLAlchemy and SQLite are selected for later stages. No backend, OpenAPI contract or database is implemented in this stage.
 
-Confirmed scope: registration/login, an editable Beginner/Intermediate/Advanced level per track, lessons, Quiz, Fix the Bug, Complete the Code, explanatory feedback, retries, hints, a separate Show Solution button, saved attempts and progress. Checking uses authored rules. Arbitrary learner code execution and an AI tutor are post-MVP.
+## Local development
 
-## Read first
+With Node.js 22.12+ and pnpm installed:
 
-- [Project specification and brainstorming summary](WeCode_Project_Specification.md)
+```sh
+cd frontend
+pnpm install
+pnpm dev
+```
+
+Preview: http://127.0.0.1:5173 (use the actual URL printed by Vite if occupied).
+
+```sh
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+## Project documents
+
+- [Specification and preserved brainstorming summary](WeCode_Project_Specification.md)
 - [Agent instructions](AGENTS.md)
-- [Development process](docs/process.md)
-- [Task template](docs/task-template.md)
-- [Testing guidelines](docs/testing-guidelines.md)
-- [Design planning](docs/design-system.md)
-- [Planning decisions and source review](docs/planning.md)
-- [Canonical active backlog: GitHub Issues](https://github.com/240103097-jpg/WeCode/issues)
+- [Selected stack and delegated defaults](docs/decisions.md)
+- [Design system and inspected visual references](docs/design-system.md)
+- [Process](docs/process.md), [task template](docs/task-template.md), [testing guidelines](docs/testing-guidelines.md)
+- [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
-Content counts, scoring, completion, assisted progress, normalization and design require decisions before dependent implementation. The full original planning transcript still needs to be supplied; the preserved summary is not a verbatim export.
-
-## Required development order
-
-1. Interactive frontend with a centralized `mockService`.
-2. Root `openapi.yml` API contract derived from the frontend service boundary.
-3. Backend implementing the contract with in-memory storage.
-4. SQLite persistence through an ORM.
-5. Connect frontend and backend, then thoroughly test.
-
-Each stage must pass QA before the next stage begins. The assignment takes precedence over the articles. The root API contract will remain versioned. Future implementation issues must add verified setup/run/test commands here when those commands exist.
+PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.

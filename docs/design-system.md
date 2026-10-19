@@ -32,3 +32,5 @@ Desktop sidebar 228px; main width up to 1280px, 40px padding. Header gives page 
 System sans-serif for UI; ui-monospace/SFMono-Regular/Menlo for code. Body 16px, line-height 1.6; page headings 32–44px. Spacing scale 4/8/12/16/24/32/40/56px, corners 8–16px. No gradients, glow, decorative achievements, fake activity or XP. Transitions are subtle and respect reduced motion.
 
 Every route and action must work. Empty progress is honest. Auth screens label local mock accounts and the public demo passphrase. Pending actions disable repeat submission and announce loading. Validation/recoverable failures use accessible alerts and Retry. Hints appear after an incorrect submission; Show Solution is a separate button and assisted work remains labeled. See [defaults](decisions.md) for exact completion semantics.
+
+Independent QA contrast calculation at decision review: main text on background/surface/elevated = 16.97/15.23/13.24:1; muted = 8.69/7.80/6.78:1; dark ink on yellow = 12.84:1, on green = 11.27:1. All pass 4.5:1 without token adjustment.
