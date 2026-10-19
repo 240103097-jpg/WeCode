@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit technical evidence is recorded. Remaining #4/#18 documentation is being independently re-reviewed against the actual instructor requirement after an explicit PM correction of the unsupported full-archive gate. No deployment or instructor submission is claimed.
+WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit technical evidence is recorded. Independent QA passed and closed #4/#18 after the documented PM correction of the unsupported full-archive gate. The genuine manual transcript remains explicitly partial, with gaps disclosed; #19 remains open post-MVP. No deployment or instructor submission is claimed.
 
 ## Run the complete app locally
 
@@ -104,7 +104,7 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 - [Independent SQLite persistence QA](docs/qa/sqlite.md)
 - [Real integration architecture and engineer checks](docs/integration.md)
 - [Independent integration and observed-bug QA](docs/qa/integration.md)
-- [Submission checklist — source-aligned review](docs/submission-checklist.md)
+- [Submission checklist — source-aligned QA PASS](docs/submission-checklist.md)
 - [Final audit results and limitations](docs/qa/final-audit.md)
 - [Verified demo guide](docs/demo-guide.md)
 - [PM](docs/team/pm.md), [software engineer](docs/team/software-engineer.md), [independent QA](docs/team/qa-engineer.md) role instructions

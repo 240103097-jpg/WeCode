@@ -1,7 +1,7 @@
 # WeCode — Project Specification and Brainstorming Record
 
 Date: 19 October 2026. Submission target: 20 October 2026 (Asia/Almaty); exact submission time unknown.
-Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit evidence is complete; #4/#18 documentation is re-reviewed after owner-authorized source alignment, with the genuine transcript honestly partial.
+Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit and source-aligned documentation QA passed; #4/#18 are closed, with the genuine transcript honestly partial.
 
 ## 1. Goal and audience
 

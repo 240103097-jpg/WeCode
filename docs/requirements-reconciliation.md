@@ -30,3 +30,7 @@ No new transcript part is included in the latest instruction. The existing stand
 The actual screenshot's chat-history, Markdown publication, stage sequence, SQLite/ORM, GitHub workflow, real testing, design references and QA-only issue closure remain mandatory. Product/English/content/security/progress rules from owner decisions also remain. #19 stays OPEN post-MVP. No missing source text is fabricated and no genuine requirement is relabeled or discarded.
 
 PM published corrected #4 and remaining #18 criteria before this handoff. Independent QA must check fidelity, substantive coverage and source alignment, documentation/link consistency, unchanged application diff and prior technical evidence; then post PASS/FAIL for each issue. Only QA can close #4, and then #18 last if all actual criteria pass and no other mvp/user-test-bug remains. This document is not itself a QA pass or an instructor submission/acceptance claim.
+
+## Final independent disposition
+
+[Independent #4 PASS](https://github.com/240103097-jpg/WeCode/issues/4#issuecomment-6274219961) and [#18 PASS](https://github.com/240103097-jpg/WeCode/issues/18#issuecomment-6274223795) at967149d confirmed substantive excerpt sufficiency and source/fidelity/gap checks. QA closed #4 first and #18 last; #19 remains open post-MVP. The transcript remains partial/manual, not a full archive or automated export. No instructor submission/acceptance is claimed.

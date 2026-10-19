@@ -1,6 +1,6 @@
 # WeCode demonstration guide
 
-Technical demo verified October 19, 2026. **Documentation #4/#18 is under source-aligned independent review; no instructor submission or acceptance is claimed.** Never demonstrate with an existing learner's credentials/data or delete a database to reset the demo.
+Technical demo verified October 19, 2026. **Documentation #4/#18 passed source-aligned independent QA and is closed; no instructor submission or acceptance is claimed.** Never demonstrate with an existing learner's credentials/data or delete a database to reset the demo.
 
 ## Start the complete app
 

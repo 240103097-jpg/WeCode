@@ -27,3 +27,5 @@ Owner-supplied materials follow-up: docs/brainstorming-transcript.md is a ten-me
 Independent materials re-review at6afa25a passed excerpt fidelity/provenance and actual screenshot comparison. #4/#18 remain OPEN because the full-history criteria are not met by the explicitly partial manual copy. Preserve that distinction; no automated-export requirement is invented. See final-audit.md supplied-material verdict.
 
 Latest PM reconciliation explicitly supersedes earlier full-history blocker language above as historical, under the owner instruction to remove unsupported planning extras. Transcript remains partial; no missing message is invented. Source-aligned #4/#18 re-review decides current status.
+
+Current final disposition: independent scope_qa PASS at967149d after explicit source reconciliation; QA closed #4 first/#18 last, #19 stays OPEN post-MVP. Transcript remains genuine/manual/partial; additional archive gaps remain disclosed, not fabricated or newly combined. Historical blocker language above is superseded by that documented source-aligned review. No instructor submission/acceptance claim.

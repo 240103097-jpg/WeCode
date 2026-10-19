@@ -26,7 +26,7 @@ React/Vite matches the owner's selection and supports a small static mock app wi
 
 ## Deferred and missing
 
-OpenAPI (#11) and in-memory backend auth/ownership (#12–14) have separate stage evidence; SQLite persistence has separate #15–16 evidence; live integration remains later issues #17–18. The genuine original planning transcript remains missing (#4); the existing summary is preserved, not reconstructed. Exact October 20 submission time remains unknown.
+OpenAPI (#11) and in-memory backend auth/ownership (#12–14) have separate stage evidence; SQLite persistence has separate #15–16 evidence; real integration/final-audit evidence is recorded for #17–18. A genuine manual partial transcript is preserved separately from the summary; #4/#18 passed independent source-aligned review after the owner-authorized requirements reconciliation. Additional archive turns remain disclosed gaps, not fabricated. Exact October 20 submission time remains unknown.
 
 ## In-memory backend engineering defaults
 
