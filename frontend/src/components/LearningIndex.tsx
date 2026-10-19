@@ -1,0 +1,4 @@
+import {unitStatus,type Snapshot} from '../services/types';
+export function LearningIndex({snapshot,practice=false}:{snapshot:Snapshot;practice?:boolean}){
+ return <div className="unit-list">{snapshot.units.map((unit,i)=>{const status=unitStatus(unit,snapshot.progress[unit.id]);return <a href={'#unit/'+unit.id} className="unit-row" key={unit.id}><span className="unit-number">{String(i+1).padStart(2,'0')}</span><div className="unit-info"><span className="eyebrow">{unit.track} / {unit.level}</span><h3>{unit.title}</h3><p>{practice?'Quiz · Fix the Bug · Complete the Code':unit.summary}</p></div><div className="row-progress"><span className={status.complete?'green':''}>{status.complete?'✓ Complete':`${status.steps}/4 steps`}</span><small>{status.independent}/3 independent</small></div><span className="row-arrow" aria-hidden="true">↗</span></a>;})}</div>;
+}

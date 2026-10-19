@@ -38,3 +38,31 @@ describe('independent track preferences',()=>{
   expect((await restored.session())?.levels).toEqual({Python:'Advanced',SQL:'Beginner',Git:'Advanced'});expect((await restored.session())?.onboarded).toBe(true);expect((await restored.snapshot()).progress['python-beginner'].read).toBe(true);
  });
 });
+
+import {units,answerRules} from '../data/curriculum';
+import {unitStatus} from './types';
+describe('authored practice behavior',()=>{
+ it('checks every authored positive/negative example and unlocks hints only after incorrect work',async()=>{
+  await service.register({name:'Learner',email:'learner@example.test'});
+  for(const unit of units)for(const ex of unit.exercises){
+   const input={unitId:unit.id,exerciseId:ex.id},rule=answerRules[ex.id];
+   await expect(service.hint(input)).rejects.toThrow('Try an answer first');
+   const wrong=await service.submit({...input,answer:rule.rejected[0]});expect(wrong.correct).toBe(false);expect(wrong.text).toBe(rule.incorrect);
+   expect(await service.hint(input)).toBe(rule.hint);
+   for(const answer of rule.accepted)expect((await service.submit({...input,answer})).correct).toBe(true);
+  }
+ });
+ it('requires a correct submission after reveal and never calls assisted-only work independent',async()=>{
+  await service.register({name:'Learner',email:'learner@example.test'});const unit=units[0];await service.markRead(unit.id);
+  for(const ex of unit.exercises){const input={unitId:unit.id,exerciseId:ex.id};const solution=await service.solution(input);expect(solution.answer).toBe(answerRules[ex.id].accepted[0]);expect((await service.snapshot()).progress[unit.id].exercises[ex.id].correct).toBe(false);const result=await service.submit({...input,answer:solution.answer});expect(result).toMatchObject({correct:true,assisted:true});}
+  const data=await service.snapshot();expect(unitStatus(unit,data.progress[unit.id])).toEqual({solved:3,independent:0,steps:4,complete:true});
+ });
+ it('normalizes outer whitespace/CRLF only and rejects blank, oversize and unrelated code',async()=>{
+  await service.register({name:'Learner',email:'learner@example.test'});const input={unitId:units[0].id,exerciseId:units[0].exercises[1].id};
+  expect((await service.submit({...input,answer:' \r\nint(age) + 1\r\n '})).correct).toBe(true);
+  expect((await service.submit({...input,answer:'int(age)+1'})).correct).toBe(false);
+  expect((await service.submit({...input,answer:'globalThis.executed = true'})).correct).toBe(false);
+  expect('executed' in globalThis).toBe(false);
+  await expect(service.submit({...input,answer:'  '})).rejects.toThrow('1 and 4,000');await expect(service.submit({...input,answer:'x'.repeat(4001)})).rejects.toThrow('1 and 4,000');
+ });
+});
