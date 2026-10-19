@@ -16,7 +16,15 @@ pnpm install
 pnpm dev
 ```
 
-Preview: http://127.0.0.1:5173 (use the actual URL printed by Vite if occupied).
+Preview after starting Vite: http://127.0.0.1:5173 (use the actual URL printed by Vite if occupied). The verification server is stopped after checks; run `pnpm dev` to reopen it.
+
+On this Codex desktop installation, Node/pnpm are bundled but not on the default shell PATH. Before the commands above, this environment can use:
+
+```sh
+export PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:$PATH"
+```
+
+This fallback is specific to this desktop installation; other machines should install Node.js and pnpm normally.
 
 ```sh
 pnpm typecheck
