@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit #18 verifies the technical evidence, but submission readiness is BLOCKED by the incomplete original planning history (#4; genuine partial manual copy supplied). No deployment or instructor submission is claimed.
+WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit technical evidence is recorded. Remaining #4/#18 documentation is being independently re-reviewed against the actual instructor requirement after an explicit PM correction of the unsupported full-archive gate. No deployment or instructor submission is claimed.
 
 ## Run the complete app locally
 
@@ -88,6 +88,7 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 
 ## Project documents
 
+- [Instructor versus planning requirements](docs/requirements-reconciliation.md)
 - [Partial manual brainstorming transcript](docs/brainstorming-transcript.md)
 - [Original assignment screenshot and comparison](docs/submission-checklist.md#actual-assignment-screenshot-comparison)
 - [Specification and preserved brainstorming summary](WeCode_Project_Specification.md)
@@ -103,7 +104,7 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 - [Independent SQLite persistence QA](docs/qa/sqlite.md)
 - [Real integration architecture and engineer checks](docs/integration.md)
 - [Independent integration and observed-bug QA](docs/qa/integration.md)
-- [Submission checklist — readiness BLOCKED](docs/submission-checklist.md)
+- [Submission checklist — source-aligned review](docs/submission-checklist.md)
 - [Final audit results and limitations](docs/qa/final-audit.md)
 - [Verified demo guide](docs/demo-guide.md)
 - [PM](docs/team/pm.md), [software engineer](docs/team/software-engineer.md), [independent QA](docs/team/qa-engineer.md) role instructions
@@ -112,7 +113,7 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 - [Task issue template](.github/ISSUE_TEMPLATE/task.md), [observed user-test-bug template](.github/ISSUE_TEMPLATE/user-test-bug.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
-PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The [user-provided partial manual transcript](docs/brainstorming-transcript.md) is preserved; omitted original planning messages are still needed under #4/#18. The separate summary is not verbatim and the manual copy is not an automated export.
+PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The [user-provided partial manual transcript](docs/brainstorming-transcript.md) is preserved with explicit gaps; the separate summary is not verbatim and the copy is not an automated export. The instructor does not demand an entire archive; see the [explicit PM reconciliation](docs/requirements-reconciliation.md).
 
 ## SQLite backend
 

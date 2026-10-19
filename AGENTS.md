@@ -2,7 +2,7 @@
 
 Read [the specification](WeCode_Project_Specification.md), [process](docs/process.md) and the current GitHub issue before working. Inspect the checkout, Git status, nested AGENTS.md files and remote state each session; never assume another session's files or commits exist. Preserve unrelated work. Never force-push or overwrite remote changes.
 
-Current stage: owner-authorized final submission audit only (#18). Verify actual history/clean setup/application, preserve retro design/product rules and existing learner/mock data. Do not deploy or submit. Only a partial manual original-planning transcript has been supplied; omitted history under #4 blocks readiness and #18 closure; never fabricate it or treat the summary as a verbatim export. Independent QA records actual results and alone closes issues only after every criterion passes. Keep normal project DB in ignored data/wecode.sqlite3 and test only isolated temporary databases.
+Current stage: owner-authorized documentation-only completion/review of #4/#18. Follow docs/requirements-reconciliation.md: instructor requires genuine brainstorming chat history.md, not an entire original archive or automated export. Preserve the supplied manual partial transcript wording/order/coverage/gaps. If more parts arrive, wait for “All parts sent” before combining. Independent QA assesses source-aligned criteria and alone closes after PASS. Keep #19 open post-MVP; do not modify application functionality, rerun unrelated tests, deploy or submit. Preserve learner/mock data.
 
 Use [GitHub Issues](https://github.com/240103097-jpg/WeCode/issues) as the only active backlog. Read [task template](docs/task-template.md). Search all existing issues before creating tasks. Labels: `mvp`, `post-mvp`, `user-test-bug`; the last is only for observed defects.
 
@@ -25,3 +25,5 @@ Final audit technical verification passed at cc53f0c; independent document revie
 Owner-supplied materials follow-up: docs/brainstorming-transcript.md is a ten-message partial manual copy, not an automated export. Preserve wording/order and do not invent omissions. Actual assignment screenshot is docs/references/assignment.png; compare its clauses in submission-checklist.md. Screenshot access is resolved, while existing #4/#18 full-history completeness remains for independent QA.
 
 Independent materials re-review at6afa25a passed excerpt fidelity/provenance and actual screenshot comparison. #4/#18 remain OPEN because the full-history criteria are not met by the explicitly partial manual copy. Preserve that distinction; no automated-export requirement is invented. See final-audit.md supplied-material verdict.
+
+Latest PM reconciliation explicitly supersedes earlier full-history blocker language above as historical, under the owner instruction to remove unsupported planning extras. Transcript remains partial; no missing message is invented. Source-aligned #4/#18 re-review decides current status.

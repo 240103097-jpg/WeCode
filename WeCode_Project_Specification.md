@@ -1,7 +1,7 @@
 # WeCode — Project Specification and Brainstorming Record
 
 Date: 19 October 2026. Submission target: 20 October 2026 (Asia/Almaty); exact submission time unknown.
-Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit is running, but readiness is BLOCKED by incomplete original history (#4; partial manual transcript now supplied).
+Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit evidence is complete; #4/#18 documentation is re-reviewed after owner-authorized source alignment, with the genuine transcript honestly partial.
 
 ## 1. Goal and audience
 
@@ -48,7 +48,7 @@ Proposed screens: sign up, sign in, track/level onboarding, dashboard, learning 
 
 ## 6. Technical approach and assignment process
 
-Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for persistence. The frontend with mockService is implemented. This stage authorizes verification of the integrated application and submission evidence only; missing genuine original transcript blocks final readiness. No deployment/submission is authorized. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
+Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for persistence. The frontend with mockService is implemented. This stage authorizes verification of the integrated application and submission evidence only; source-aligned transcript criteria are independently reviewed; complete archive capture is not an instructor requirement. No deployment/submission is authorized. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
 
 Follow the assignment's iteration order:
 1. Interactive frontend using mockService.
@@ -72,7 +72,7 @@ Check registration, login, authorization boundaries, all exercise types, normali
 
 ## 9. Brainstorming record
 
-This is an honest summary of the visible discussion, not a verbatim full chat export. A genuine [user-provided manual partial transcript](docs/brainstorming-transcript.md) now preserves ten original messages; it is not an automated export or complete history. Earlier ideation/selection and other omitted turns remain needed under existing #4/#18 full-history criteria. Do not reconstruct or fabricate missing conversation.
+This is an honest summary of the visible discussion, not a verbatim full chat export. A genuine [user-provided manual partial transcript](docs/brainstorming-transcript.md) now preserves ten original messages; it is not an automated export or complete history. Earlier ideation/selection and other omitted turns remain declared coverage gaps. The owner-authorized [PM reconciliation](docs/requirements-reconciliation.md) corrects the extra full-archive gate to the actual instructor requirement for genuine brainstorming history. Do not reconstruct or fabricate missing conversation.
 
 1. The user requested that the assignment be divided into steps and completed gradually.
 2. Several unrelated app ideas were discussed and rejected.

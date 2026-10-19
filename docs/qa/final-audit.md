@@ -1,6 +1,6 @@
 # Final submission audit — issue #18
 
-Date: October 19, 2026, Asia/Almaty. **Overall submission audit: BLOCKED (QA FAIL for unmet required criterion), not submission-ready.** Technical application checks pass. The initial audit lacked original planning messages; a subsequent genuine partial manual copy is now preserved, but full-history completeness remains unresolved under #4. Neither the existing summary nor this conversation summary is represented as the original transcript. #4 and #18 remain required `mvp` issues and open; no unfinished requirement was relabeled post-MVP.
+Date: October 19, 2026, Asia/Almaty. **Historical audit verdicts: BLOCKED under prior full-history criteria. Current: source-aligned documentation QA pending.** Technical application checks pass. The initial audit lacked original planning messages; a subsequent genuine partial manual copy is now preserved, but full-history completeness remains unresolved under #4. Neither the existing summary nor this conversation summary is represented as the original transcript. #4 and #18 remain required `mvp` issues and open; no unfinished requirement was relabeled post-MVP.
 
 ## Scope, environment and revisions
 
@@ -132,3 +132,11 @@ Reviewed published `6afa25a0d35f97bde5493a698e3d9c4eb65406a6` by independent `ma
 - Independent checks:30 tracked Markdown files,116 relative target occurrences/12 fragments, zero broken links; `git diff --check` PASS; screenshot byte hashes equal; empty frontend/backend/root-contract diff from6ddfd0a; reviewed HEAD matched origin/main. No database/secrets added or learner data changed.
 
 The final evidence-only follow-up commit preserves this independent verdict. No all-mvp-closed, submission-readiness or instructor-submission claim is made. Owner action: supply actual omitted original messages in order with scope/provenance, or a genuine complete manual copy, for another criteria review.
+
+## Owner-authorized instructor-scope correction
+
+The latest owner instruction explicitly authorizes PM to compare the original screenshot with our planning additions and correct unsupported extras. [requirements-reconciliation.md](../requirements-reconciliation.md) documents the source clause, previous broader full-archive interpretation, authority for correction and retained genuine requirements. #4/#18 criteria were revised publicly before engineering changes; previous QA FAIL/BLOCKED verdicts above remain valid historical records under the earlier criteria.
+
+Instructor requires actual brainstorming-before-app chat history as .md, not every original turn or an automated export. Existing ten-message original dialogue records substantive pre-app feature/naming choices with owner manual-copy provenance and explicit gaps. Transcript source blocks are unchanged from reviewed2f6e6e4; no overlapping duplicate parts or new continuation were supplied in this instruction. Repeated legitimate “да” replies remain. If future material comes in parts, wait for “All parts sent” before combining.
+
+No genuine chat-history, publication, staged-development, SQLite/ORM, testing or QA-only closure requirement is removed. No app/backend/contract changes or unrelated test reruns are made. Prior independent technical evidence remains at cc53f0c, with empty source diffs checked. Markdown links/fragments and git diff --check are rerun for this change. Independent QA must assess actual corrected criteria, post #4/#18 PASS/FAIL and close only if genuinely satisfied, #4 before #18, keeping #19 open post-MVP. Until that verdict, this is not a self-certified closure or submission-readiness statement.
