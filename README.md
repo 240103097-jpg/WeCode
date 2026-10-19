@@ -63,6 +63,7 @@ All data operations go through [the typed service boundary](docs/mock-service.md
 - [Process](docs/process.md), [task template](docs/task-template.md), [testing guidelines](docs/testing-guidelines.md)
 - [Frontend QA evidence](docs/qa/frontend.md)
 - [Retro redesign verification](docs/qa/redesign.md)
+- [Independent API contract verification](docs/qa/api-contract.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
 PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.
