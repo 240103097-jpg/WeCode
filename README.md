@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration is issue #17; the final submission audit #18 is a separate next stage and is not claimed complete.
+WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed; the final submission audit #18 is a separate next stage and is not claimed complete.
 
 ## Run the complete app locally
 
@@ -100,6 +100,7 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 - [Independent in-memory backend QA](docs/qa/backend.md)
 - [Independent SQLite persistence QA](docs/qa/sqlite.md)
 - [Real integration architecture and engineer checks](docs/integration.md)
+- [Independent integration and observed-bug QA](docs/qa/integration.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
 PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.
