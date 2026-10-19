@@ -73,7 +73,7 @@ Follow the assignment's iteration order:
 4. Replace in-memory storage with SQLite through an ORM.
 5. Connect the frontend to the real backend and test end to end.
 
-Use GitHub Issues as the active backlog with mvp, post-mvp and user-test-bug labels. PM refines each issue with Goal, Acceptance criteria, Out of scope and Constraints. Engineer implements it and records actual checks. QA independently checks each criterion and records PASS or FAIL; failed work returns for correction. Follow the assignment's requirement that QA closes completed mvp and user-test-bug issues. Save agent instructions and evolving Markdown documentation in the repository. No repository, issues or application have been created by this document.
+Use GitHub Issues as the active backlog with mvp, post-mvp and user-test-bug labels. PM refines each issue with Goal, Acceptance criteria, Out of scope and Constraints. Engineer implements it and records actual checks. QA independently checks each criterion and records PASS or FAIL; failed work returns for correction. Follow the assignment's requirement that only QA closes issues after PASS, including completed mvp and user-test-bug issues. Save agent instructions and evolving Markdown documentation in the repository. This specification itself does not implement the application. Repository setup and the canonical issue backlog are documented in README.md and docs/planning.md.
 
 ## 7. Proposed post-MVP scope
 
@@ -88,7 +88,7 @@ Check registration, login, authorization boundaries, all exercise types, normali
 
 ## 9. Brainstorming record
 
-This is an honest summary of the visible discussion, not a verbatim full chat export. The assignment asks for chat history; retain an actual export alongside this summary if a verbatim transcript is required.
+This is an honest summary of the visible discussion, not a verbatim full chat export. The full original planning transcript still needs to be added for the assignment. The original transcript is not available in this checkout; the owner must supply a genuine export. Do not reconstruct or fabricate missing conversation.
 
 1. The user requested that the assignment be divided into steps and completed gradually.
 2. Several unrelated app ideas were discussed and rejected.
