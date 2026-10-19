@@ -30,9 +30,22 @@ class ContractClient(TestClient):
 
 
 @pytest.fixture
-def client():
-    with ContractClient(create_app()) as instance:
-        yield instance
+def client(request, tmp_path):
+    from backend.wecode.storage import MemoryStorage
+    from backend.wecode.sql_storage import SQLStorage
+    storage = SQLStorage('sqlite:///' + str(tmp_path / 'api.sqlite3')) if getattr(request, 'param', 'memory') == 'sqlite' else MemoryStorage()
+    try:
+        with ContractClient(create_app(storage=storage)) as instance:
+            yield instance
+    finally:
+        if hasattr(storage, 'close'):
+            storage.close()
+
+
+def pytest_generate_tests(metafunc):
+    # #15 gates account foundation only; #16 expands this to all API suites.
+    if 'client' in metafunc.fixturenames and metafunc.module.__name__.endswith('test_auth'):
+        metafunc.parametrize('client', ['memory', 'sqlite'], indirect=True)
 
 
 @pytest.fixture

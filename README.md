@@ -109,3 +109,15 @@ python3 backend/scripts/sync_curriculum.py
 ```
 
 The final command requires Node on PATH and existing frontend TypeScript dependencies, as described above; the running backend does not. Tests exercise every operation, all 27 exercises, ownership, strict errors, secret exclusion, authentication, assisted/independent history, retries, completion, concurrent writes and failed-commit rollback. TestClient checks response statuses, headers and schemas against root OpenAPI. One upstream Starlette/AnyIO TestClient deprecation warning is currently emitted; it does not affect results.
+
+## SQLite persistence stage
+
+SQLAlchemy is pinned in the backend requirements. Account/session/preferences foundation is issue #15; the complete curriculum/learning adapter and runtime switch are #16. At the #15 gate the runtime remains in-memory, and the partial SQL adapter rejects learning writes rather than silently discard them. See [SQLite setup and lifecycle](docs/sqlite.md).
+
+```sh
+export DATABASE_URL=sqlite:////tmp/wecode.sqlite3
+/tmp/wecode-backend-venv/bin/python backend/scripts/init_db.py
+/tmp/wecode-backend-venv/bin/python -m pytest backend/tests/test_auth.py backend/tests/test_sql_accounts.py -q
+```
+
+The example [.env.example](.env.example) contains no credentials; export its value explicitly (there is no automatic dotenv loading). SQLite files and local environment files are ignored by Git. Only file-backed SQLite and Python 3.13 are verified; other database compatibility is not claimed.
