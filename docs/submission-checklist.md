@@ -59,6 +59,6 @@ Committed original documents: README.md, AGENTS.md, WeCode_Project_Specification
 - **#4 mvp — BLOCKED:** genuine original transcript/export and provenance still needed. Preserve the summary. Only independent QA may close after genuine artifact review.
 - **#18 mvp — BLOCKED overall:** technical checks may pass, but full audit cannot pass until the transcript criterion and any remaining verification limits are resolved.
 - **#19 post-mvp:** deliberate AI/execution research exclusion, not relabeled unfinished MVP.
-- No open user-test-bug after #23 independent PASS. Re-query GitHub for changes; this is an audit snapshot, not an alternative active backlog.
+- No open user-test-bug after #23 independent PASS. [Final independent #18 verdict](https://github.com/240103097-jpg/WeCode/issues/18#issuecomment-6273418192): criteria1/2/4/5/6/7 PASS,3/8 BLOCKED, overall QA FAIL. Re-query GitHub for changes; this is an audit snapshot, not an alternative active backlog.
 
 Owner still needs to supply the genuine transcript. The original assignment screenshot, exact submission time and final delivery instructions are unavailable for independent comparison/operational scheduling; no submission action is authorized. No claim of instructor acceptance, deployment, external human testing or other-database compatibility is made.

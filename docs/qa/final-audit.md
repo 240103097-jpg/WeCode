@@ -90,7 +90,20 @@ Open-issue inspection after #23 closure: **#4 mvp** missing transcript, **#18 mv
 
 ## Independent final verdict
 
-Independent technical checks completed PASS. The reviewer supplied this initial disposition before final document publication: **QA FAIL — BLOCKED by missing required owner material; technical application checks PASS.** Criterion1(history),4(clean verification),5(real app) and6(issue/bug process) passed; criterion3(genuine transcript) and8(overall readiness) are BLOCKED. Final document-review criteria2/7 and the exact reviewed documentation revision are recorded in the subsequent independent issue comment and evidence addendum after handoff. Engineer does not self-certify that review or close #18.
+Independent reviewer completed the document/publication review at `a501ccbe17b22175c67c58647e4c062f6e3f28d0`, with application/test-tooling at `cc53f0cbb1a5769611ffd9458e676cd6182033c0`. [Actual final QA comment](https://github.com/240103097-jpg/WeCode/issues/18#issuecomment-6273418192) records **QA FAIL — BLOCKED by missing required owner material; technical application checks PASS**. QA left #18 OPEN.
+
+| #18 criterion | Independent verdict |
+| --- | --- |
+| 1 Requirement mapping/stage order | PASS |
+| 2 Committed documents/design reference | PASS |
+| 3 Genuine original transcript/source limits | BLOCKED |
+| 4 Clean setup/checks | PASS |
+| 5 Full real application audit | PASS |
+| 6 Issue/observed-defect workflow | PASS |
+| 7 Final documents/results/publication | PASS |
+| 8 Every criterion passed/submission readiness | BLOCKED — therefore overall QA FAIL under process rules |
+
+The reviewer independently verified29 tracked Markdown files and103 relative targets/fragments with no broken links, clean HEAD matching origin/main, empty application/backend/contract diff from the reviewed implementation and actual-timestamp publication. Open required issues remain #4/#18, no user-test-bug open; #19 remains deliberately post-MVP. The following final evidence-only addendum changes no application/test code and preserves that verdict.
 
 ## Remaining requirements and limitations
 

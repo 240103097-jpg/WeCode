@@ -19,3 +19,5 @@ Backend commands from repository root (Python 3.13 verified): create `/tmp/wecod
 Persistence verification additionally runs `/tmp/wecode-backend-venv/bin/python backend/scripts/check_restart.py` (three real processes, isolated temporary SQLite database). API test fixtures run both memory regression and temporary SQLite variants; never point tests at real learner databases. Default runtime requires DATABASE_URL and uses SQLStorage. Only SQLite is verified; do not claim another database works.
 
 Integration #17 and observed bugs #21/#22 passed independent QA at 45574230a5c82b13a859454226fd3887561db401 and are closed. Their evidence is historical; the owner now authorizes final audit #18, with genuine transcript still required for readiness. Evidence: docs/qa/integration.md.
+
+Final audit technical verification passed at cc53f0c; independent document review at a501ccb recorded QA FAIL overall because genuine original transcript criterion is BLOCKED. #4/#18 remain open mvp, #23 observed mobile bug is QA-closed. No submission-readiness/deployment/submission claim is authorized; see docs/qa/final-audit.md.
