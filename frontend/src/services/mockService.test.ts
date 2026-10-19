@@ -29,3 +29,12 @@ describe('local mock accounts',()=>{
   await expect(failing.register({name:'Test',email:'test@example.test'})).rejects.toThrow('Could not save');
  });
 });
+
+describe('independent track preferences',()=>{
+ it('preserves each level across track switches and service reloads',async()=>{
+  await service.register({name:'Learner',email:'learner@example.test'});await service.markRead('python-beginner');
+  for(const track of ['Python','SQL','Git'] as const) for(const level of ['Beginner','Intermediate','Advanced'] as const){await service.preferences({track,level,onboarded:true});const snapshot=await service.snapshot();expect(snapshot.learner.activeTrack).toBe(track);expect(snapshot.learner.levels[track]).toBe(level);}
+  await service.preferences({track:'SQL',level:'Beginner'});const restored=createMockService({getItem:k=>values.get(k)??null,setItem:(k,v)=>{values.set(k,v);}},0);
+  expect((await restored.session())?.levels).toEqual({Python:'Advanced',SQL:'Beginner',Git:'Advanced'});expect((await restored.session())?.onboarded).toBe(true);expect((await restored.snapshot()).progress['python-beginner'].read).toBe(true);
+ });
+});

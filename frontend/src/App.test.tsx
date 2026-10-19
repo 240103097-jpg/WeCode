@@ -12,8 +12,8 @@ describe('mock authentication UI',()=>{
   expect(screen.getByRole('status')).toHaveTextContent('Loading');
   await screen.findByText('Make room for learning.');
   await userEvent.type(screen.getByLabelText('Display name'),'Alex');await userEvent.type(screen.getByLabelText('Demo email'),'alex@example.test');await userEvent.click(screen.getByRole('button',{name:'Create demo account →'}));
-  expect(await screen.findByRole('heading',{name:'Overview'})).toBeVisible();
-  view.unmount();render(<App service={service()}/>);expect(await screen.findByRole('heading',{name:'Overview'})).toBeVisible();
+  expect(await screen.findByRole('heading',{name:'Choose your starting point.'})).toBeVisible();
+  await userEvent.click(screen.getByRole('button',{name:/SQL Think in data/}));await userEvent.selectOptions(screen.getByLabelText('SQL level'),'Intermediate');await userEvent.click(screen.getByRole('button',{name:'Open my workspace →'}));expect(await screen.findByText('Your workspace starts here')).toBeVisible();view.unmount();render(<App service={service()}/>);expect(await screen.findByRole('heading',{name:'Overview'})).toBeVisible();
   await userEvent.click(screen.getByRole('button',{name:'Sign out'}));await screen.findByText('Make room for learning.');await userEvent.click(screen.getByRole('button',{name:'Sign in'}));
   await userEvent.type(screen.getByLabelText('Demo email'),'alex@example.test');await userEvent.type(screen.getByLabelText('Demo passphrase'),'wrong');await userEvent.click(screen.getByRole('button',{name:'Sign in →'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('incorrect');
