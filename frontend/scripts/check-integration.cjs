@@ -54,9 +54,11 @@ async function stop(child){if(!child||child.exitCode!==null)return;child.kill('S
     await page.getByRole('button',{name:new RegExp(unit.track+' ')}).click();
     await page.getByLabel(unit.track+' level').selectOption(unit.level);
     await page.getByRole('button',{name:'Save learning preferences',exact:true}).click();
+    await page.getByRole('button',{name:'Save learning preferences',exact:true}).waitFor();
     await page.getByRole('heading',{name:'A level for every path.'}).waitFor();
     await page.getByRole('link').filter({hasText:unit.title}).first().click();
     await page.getByRole('heading',{level:1,name:unit.title,exact:true}).waitFor();
+    await page.getByRole('button',{name:/Mark lesson as read|✓ Lesson marked read/}).waitFor();
     const read=page.getByRole('button',{name:'Mark lesson as read',exact:true});
     if(await read.count()){await read.click();await page.getByRole('button',{name:'✓ Lesson marked read'}).waitFor();}
     for(const exercise of unit.exercises){
