@@ -86,3 +86,12 @@ API base: http://127.0.0.1:8000/api/v1. Interactive API docs: http://127.0.0.1:8
 **In-memory data is lost on restart:** accounts, sessions, preferences, attempts and progress exist only in one process. Run exactly one worker, without reload when retaining temporary data matters. No database or filesystem learner records are written. Real API registration requires a private 12–128 character password; the public mock passphrase grants no special access. Passwords use salted Argon2id hashes; opaque 256-bit session tokens expire after 24 hours and current-session logout revokes them. Never put credentials in URLs or logs. No access logging is enabled by the documented command.
 
 The storage protocol exposes atomic transactions; the memory adapter serializes operations and rolls back failed writes. Domain/API code receives storage through `create_app(storage=...)`, ready for a separately authorized persistence adapter. Root contract validation supplies strict request types/fields without coercion. API tests validate actual statuses, headers and response payloads against that same contract.
+
+The server loads [backend/data/curriculum.json](backend/data/curriculum.json), a literal export of the existing frontend curriculum, including private server answer rules. It does not require Node or the frontend at runtime. Public snapshots serialize only the separately held public units. Check authoring drift without executing TypeScript:
+
+```sh
+python3 backend/scripts/sync_curriculum.py
+/tmp/wecode-backend-venv/bin/python backend/scripts/smoke.py
+```
+
+The smoke command needs the running local server and creates a disposable in-memory account, without printing its generated credentials. Only an authorized content change should regenerate the export with `--write`.

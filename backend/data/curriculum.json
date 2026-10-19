@@ -1,0 +1,733 @@
+{
+  "units": [
+    {
+      "track": "Python",
+      "level": "Beginner",
+      "title": "Values, names & first steps",
+      "summary": "Store values, work with numbers, and make your first output.",
+      "lesson": [
+        "A variable name refers to a value. In Python, = assigns a value and == compares two values. Strings use quotes; integers such as 3 do not. print() displays a value.",
+        "input() returns a string, even when the learner types digits. Use int() to convert a string containing an integer before doing arithmetic. An invalid integer string raises ValueError; our exercises use valid numeric strings."
+      ],
+      "example": "name = \"Ada\"\nlessons = 3\nprint(name)\nprint(lessons + 1)  # 4",
+      "takeaway": "Convert numeric text before arithmetic; assignment and comparison are different operations.",
+      "id": "python-beginner",
+      "exercises": [
+        {
+          "id": "python-beginner-quiz",
+          "type": "Quiz",
+          "prompt": "What is printed by print(2 + 3)?",
+          "options": [
+            {
+              "id": "a",
+              "text": "5"
+            },
+            {
+              "id": "b",
+              "text": "23"
+            },
+            {
+              "id": "c",
+              "text": "2 + 3"
+            }
+          ]
+        },
+        {
+          "id": "python-beginner-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace only the faulty right-hand expression so the result is the number 8.",
+          "code": "age = \"7\"\nnext_age = age + 1"
+        },
+        {
+          "id": "python-beginner-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the missing function name to display the message.",
+          "code": "____(\"Hello, WeCode!\")"
+        }
+      ]
+    },
+    {
+      "track": "Python",
+      "level": "Intermediate",
+      "title": "Transform data with comprehensions",
+      "summary": "Filter a sequence and build a result without mutating your input.",
+      "lesson": [
+        "A list comprehension creates a new list from an iterable: [expression for item in iterable if condition]. The if clause filters input items; the expression transforms the items that remain. The original list is not modified by the comprehension.",
+        "Functions return results with return. A function that only prints its result returns None implicitly. Keep transformation and display separate so callers can reuse the data."
+      ],
+      "example": "def doubled_evens(numbers):\n    return [n * 2 for n in numbers if n % 2 == 0]\n\nprint(doubled_evens([1, 2, 3, 4]))  # [4, 8]",
+      "takeaway": "The filter chooses items; the leading expression transforms them. Return data to the caller.",
+      "id": "python-intermediate",
+      "exercises": [
+        {
+          "id": "python-intermediate-quiz",
+          "type": "Quiz",
+          "prompt": "What does [n * 2 for n in [1, 2, 3] if n > 1] produce?",
+          "options": [
+            {
+              "id": "a",
+              "text": "[2, 4, 6]"
+            },
+            {
+              "id": "b",
+              "text": "[4, 6]"
+            },
+            {
+              "id": "c",
+              "text": "[2, 3]"
+            }
+          ]
+        },
+        {
+          "id": "python-intermediate-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace only the final line so this function returns its list to the caller. Use the shown variable name.",
+          "code": "def positives(numbers):\n    result = [n for n in numbers if n > 0]\n    print(result)"
+        },
+        {
+          "id": "python-intermediate-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the filter condition to keep even integers. Use n % 2 and ==.",
+          "code": "evens = [n for n in numbers if ____]"
+        }
+      ]
+    },
+    {
+      "track": "Python",
+      "level": "Advanced",
+      "title": "Lazy iteration with generators",
+      "summary": "Yield values on demand and reason about consumed iterators.",
+      "lesson": [
+        "A function containing yield produces a generator iterator when called. It runs lazily: each next() resumes it until the next yield. Its local state is preserved between yields; return ends the generator.",
+        "A generator iterator is consumed as you advance it. It does not start over when reused. A generator expression also creates values lazily, while a list comprehension builds a whole list immediately. Laziness can reduce memory for large streams."
+      ],
+      "example": "def squares(limit):\n    for n in range(limit):\n        yield n * n\n\nstream = squares(3)\nprint(next(stream))  # 0\nprint(list(stream))  # [1, 4]",
+      "takeaway": "yield suspends execution with state intact; an exhausted iterator does not restart itself.",
+      "id": "python-advanced",
+      "exercises": [
+        {
+          "id": "python-advanced-quiz",
+          "type": "Quiz",
+          "prompt": "After g = (n for n in range(3)); next(g), what does list(g) return?",
+          "options": [
+            {
+              "id": "a",
+              "text": "[0, 1, 2]"
+            },
+            {
+              "id": "b",
+              "text": "[]"
+            },
+            {
+              "id": "c",
+              "text": "[1, 2]"
+            }
+          ]
+        },
+        {
+          "id": "python-advanced-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace only return n with a line that emits every n lazily from this function.",
+          "code": "def count_to(limit):\n    for n in range(limit):\n        return n"
+        },
+        {
+          "id": "python-advanced-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the expression that requests the next item from stream. Use the built-in next function.",
+          "code": "stream = (n * n for n in range(4))\nfirst = ____"
+        }
+      ]
+    },
+    {
+      "track": "SQL",
+      "level": "Beginner",
+      "title": "Ask your first data question",
+      "summary": "Select columns and filter rows with a clear SQL query.",
+      "lesson": [
+        "SELECT chooses the columns to return and FROM names the source table. WHERE filters individual rows before they reach the result. Text literals use single quotes. Numeric literals such as 18 do not need quotes.",
+        "In this unit, learners(id, name, age) contains one row per learner. Use >= for an inclusive lower bound. ORDER BY sorts the result; without it, do not rely on a particular row order. These exercises use SQL compatible with SQLite."
+      ],
+      "example": "SELECT name\nFROM learners\nWHERE age >= 18\nORDER BY name;",
+      "takeaway": "SELECT picks columns; WHERE picks rows. Use ORDER BY when order matters.",
+      "id": "sql-beginner",
+      "exercises": [
+        {
+          "id": "sql-beginner-quiz",
+          "type": "Quiz",
+          "prompt": "Which clause filters individual rows?",
+          "options": [
+            {
+              "id": "a",
+              "text": "WHERE"
+            },
+            {
+              "id": "b",
+              "text": "ORDER BY"
+            },
+            {
+              "id": "c",
+              "text": "SELECT"
+            }
+          ]
+        },
+        {
+          "id": "sql-beginner-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace only the comparison to include learners aged 18 and older. Keep the column on the left.",
+          "code": "SELECT name FROM learners WHERE age > 18;"
+        },
+        {
+          "id": "sql-beginner-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the column name to return learner names.",
+          "code": "SELECT ____ FROM learners;"
+        }
+      ]
+    },
+    {
+      "track": "SQL",
+      "level": "Intermediate",
+      "title": "Summarize rows into groups",
+      "summary": "Aggregate data and filter the resulting groups.",
+      "lesson": [
+        "GROUP BY combines rows with equal grouping values. Aggregate functions such as COUNT(*) and SUM(amount) compute one result per group. In orders(id, customer_id, amount), grouping by customer_id lets us summarize each customer.",
+        "WHERE filters rows before grouping. HAVING filters groups after aggregation. COUNT(*) counts rows, including rows whose individual columns contain NULL. COUNT(column) counts only rows where that column is not NULL."
+      ],
+      "example": "SELECT customer_id, COUNT(*) AS order_count\nFROM orders\nGROUP BY customer_id\nHAVING COUNT(*) >= 2;",
+      "takeaway": "Use WHERE for input rows and HAVING for aggregate conditions.",
+      "id": "sql-intermediate",
+      "exercises": [
+        {
+          "id": "sql-intermediate-quiz",
+          "type": "Quiz",
+          "prompt": "Which clause keeps only groups where COUNT(*) is at least 2?",
+          "options": [
+            {
+              "id": "a",
+              "text": "WHERE COUNT(*) >= 2"
+            },
+            {
+              "id": "b",
+              "text": "HAVING COUNT(*) >= 2"
+            },
+            {
+              "id": "c",
+              "text": "ORDER BY COUNT(*) >= 2"
+            }
+          ]
+        },
+        {
+          "id": "sql-intermediate-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace only WHERE with the correct keyword in this grouped query.",
+          "code": "SELECT customer_id, SUM(amount)\nFROM orders\nGROUP BY customer_id\nWHERE SUM(amount) > 100;"
+        },
+        {
+          "id": "sql-intermediate-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the aggregate expression to count every order row, including rows with a NULL amount.",
+          "code": "SELECT customer_id, ____ AS orders_count\nFROM orders GROUP BY customer_id;"
+        }
+      ]
+    },
+    {
+      "track": "SQL",
+      "level": "Advanced",
+      "title": "Keep the rows. Add the insight.",
+      "summary": "Use window functions for ranking and running totals.",
+      "lesson": [
+        "Window functions calculate across related rows while keeping each input row. OVER defines the window. PARTITION BY separates independent groups and ORDER BY defines order inside each partition. GROUP BY, in contrast, collapses rows into groups.",
+        "For sales(id, team, amount), a running total can use SUM(amount) OVER (PARTITION BY team ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW). Assume id is unique. ROW_NUMBER assigns a unique position; include a unique tie-breaker in ORDER BY for deterministic numbering."
+      ],
+      "example": "SELECT id, team, amount,\n  SUM(amount) OVER (\n    PARTITION BY team ORDER BY id\n    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n  ) AS running_total\nFROM sales;",
+      "takeaway": "A window adds a calculation to each row; partition and ordering define which rows contribute.",
+      "id": "sql-advanced",
+      "exercises": [
+        {
+          "id": "sql-advanced-quiz",
+          "type": "Quiz",
+          "prompt": "What does PARTITION BY team do inside OVER?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Collapses sales to one row per team"
+            },
+            {
+              "id": "b",
+              "text": "Sorts the entire final output"
+            },
+            {
+              "id": "c",
+              "text": "Restarts the window calculation for each team"
+            }
+          ]
+        },
+        {
+          "id": "sql-advanced-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace only ORDER BY amount DESC with a deterministic ordering. id is unique; break equal amounts by ascending id.",
+          "code": "ROW_NUMBER() OVER (ORDER BY amount DESC)"
+        },
+        {
+          "id": "sql-advanced-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the frame start so the running total includes every earlier row in its partition.",
+          "code": "ROWS BETWEEN ____ AND CURRENT ROW"
+        }
+      ]
+    },
+    {
+      "track": "Git",
+      "level": "Beginner",
+      "title": "From working file to commit",
+      "summary": "Understand the working tree, staging area and commit history.",
+      "lesson": [
+        "Git tracks snapshots. Your working tree contains editable files; the staging area (index) contains the next proposed snapshot. git add copies the current version of a file into the staging area. Later edits need to be staged again.",
+        "git status shows staged and unstaged changes. git commit records the staged snapshot, not every working file. A commit is local; it is not automatically uploaded to a remote. Use small, descriptive commits. These are learning examples, not commands executed by WeCode."
+      ],
+      "example": "git status\ngit add notes.py\ngit commit -m \"Add learning notes\"",
+      "takeaway": "Stage the intended file version before committing; local commits and remote publishing are separate.",
+      "id": "git-beginner",
+      "exercises": [
+        {
+          "id": "git-beginner-quiz",
+          "type": "Quiz",
+          "prompt": "Which command stages the current version of notes.py?",
+          "options": [
+            {
+              "id": "a",
+              "text": "git add notes.py"
+            },
+            {
+              "id": "b",
+              "text": "git commit notes.py"
+            },
+            {
+              "id": "c",
+              "text": "git push notes.py"
+            }
+          ]
+        },
+        {
+          "id": "git-beginner-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace the entire command to stage notes.py instead of trying to publish it.",
+          "code": "git push notes.py"
+        },
+        {
+          "id": "git-beginner-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the subcommand to record the already-staged snapshot with this message.",
+          "code": "git ____ -m \"Add notes\""
+        }
+      ]
+    },
+    {
+      "track": "Git",
+      "level": "Intermediate",
+      "title": "Work safely across branches",
+      "summary": "Create an isolated branch and merge it into the intended target.",
+      "lesson": [
+        "A branch names a line of development. git switch -c feature/notes creates a branch from the current commit and switches to it. New commits advance the branch you have checked out. Check git status before switching, because uncommitted changes can block or complicate a switch.",
+        "To bring feature/notes into main, switch to main first, then run git merge feature/notes. If conflicts occur, inspect and edit the conflicted files, stage the resolved versions, and complete the merge. A conflict needs human judgment, not blindly accepting one side."
+      ],
+      "example": "git switch -c feature/notes\n# Edit, stage and commit your change\ngit switch main\ngit merge feature/notes",
+      "takeaway": "The current branch is the merge destination; the merge argument is the source branch.",
+      "id": "git-intermediate",
+      "exercises": [
+        {
+          "id": "git-intermediate-quiz",
+          "type": "Quiz",
+          "prompt": "You want to merge feature/notes into main. Which branch should be checked out?",
+          "options": [
+            {
+              "id": "a",
+              "text": "feature/notes"
+            },
+            {
+              "id": "b",
+              "text": "main"
+            },
+            {
+              "id": "c",
+              "text": "Either branch; the result is identical"
+            }
+          ]
+        },
+        {
+          "id": "git-intermediate-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace the full command to create feature/notes and switch to it in one step. Assume it does not exist.",
+          "code": "git branch feature/notes"
+        },
+        {
+          "id": "git-intermediate-fill",
+          "type": "Complete the Code",
+          "prompt": "You are on main. Fill only the source branch name to merge its work into main.",
+          "code": "git merge ____"
+        }
+      ]
+    },
+    {
+      "track": "Git",
+      "level": "Advanced",
+      "title": "Undo changes without rewriting trust",
+      "summary": "Choose between reverting a shared commit and unstaging a file.",
+      "lesson": [
+        "Undoing is context-dependent. git revert creates a new commit that reverses an earlier commit, keeping history intact. For an ordinary non-merge commit already shared with others, revert is usually safer than moving branch history backward with reset. Reverting a merge requires additional parent-selection decisions outside this unit.",
+        "git restore --staged notes.py restores the index entry from HEAD by default, leaving working-tree edits in place. git restore notes.py without --staged can discard unstaged file changes; these operations are not interchangeable. Always inspect git status and your diff before undoing."
+      ],
+      "example": "git status\n# Unstage notes.py but keep its working-tree edits:\ngit restore --staged notes.py\n# Reverse an ordinary, already-shared commit:\ngit revert abc1234",
+      "takeaway": "Use a new revert commit for shared history; unstage separately from discarding working edits.",
+      "id": "git-advanced",
+      "exercises": [
+        {
+          "id": "git-advanced-quiz",
+          "type": "Quiz",
+          "prompt": "An ordinary non-merge commit is already shared. Which command creates a new commit to reverse it?",
+          "options": [
+            {
+              "id": "a",
+              "text": "git reset --hard HEAD~1"
+            },
+            {
+              "id": "b",
+              "text": "git restore ."
+            },
+            {
+              "id": "c",
+              "text": "git revert abc1234"
+            }
+          ]
+        },
+        {
+          "id": "git-advanced-bug",
+          "type": "Fix the Bug",
+          "prompt": "Replace the full command to unstage notes.py while preserving its current working-tree edits.",
+          "code": "git restore notes.py"
+        },
+        {
+          "id": "git-advanced-fill",
+          "type": "Complete the Code",
+          "prompt": "Fill only the subcommand to reverse the shown ordinary shared commit with a new commit.",
+          "code": "git ____ abc1234"
+        }
+      ]
+    }
+  ],
+  "answerRules": {
+    "python-beginner-quiz": {
+      "accepted": [
+        "a"
+      ],
+      "explanation": "Two integer values are added to produce the integer 5.",
+      "incorrect": "Both operands are integers, not quoted strings.",
+      "hint": "Look for the result of integer addition.",
+      "rejected": [
+        "b",
+        "c"
+      ]
+    },
+    "python-beginner-bug": {
+      "accepted": [
+        "int(age) + 1"
+      ],
+      "explanation": "int() converts \"7\" to 7 before adding 1.",
+      "incorrect": "A string cannot be added directly to an integer. Convert age first.",
+      "hint": "Use int(age), then add one.",
+      "rejected": [
+        "age + 1"
+      ]
+    },
+    "python-beginner-fill": {
+      "accepted": [
+        "print"
+      ],
+      "explanation": "print() writes the message to standard output.",
+      "incorrect": "Use the built-in function that displays a value.",
+      "hint": "The function name starts with pr.",
+      "rejected": [
+        "echo"
+      ]
+    },
+    "python-intermediate-quiz": {
+      "accepted": [
+        "b"
+      ],
+      "explanation": "Only 2 and 3 pass n > 1; doubling them gives [4, 6].",
+      "incorrect": "Apply the condition before calculating the output expression.",
+      "hint": "First remove 1, then double the remaining values.",
+      "rejected": [
+        "a",
+        "c"
+      ]
+    },
+    "python-intermediate-bug": {
+      "accepted": [
+        "return result"
+      ],
+      "explanation": "return result supplies the computed list to the caller.",
+      "incorrect": "print() displays data but does not return the list from the function.",
+      "hint": "Use the return keyword with result.",
+      "rejected": [
+        "print(result)"
+      ]
+    },
+    "python-intermediate-fill": {
+      "accepted": [
+        "n % 2 == 0"
+      ],
+      "explanation": "An even integer has remainder zero when divided by 2.",
+      "incorrect": "The remainder must be zero, not one.",
+      "hint": "Compare n % 2 with 0.",
+      "rejected": [
+        "n % 2 == 1"
+      ]
+    },
+    "python-advanced-quiz": {
+      "accepted": [
+        "c"
+      ],
+      "explanation": "next(g) consumes 0, leaving 1 and 2 for list(g).",
+      "incorrect": "A generator is a one-pass iterator; consumed items are not replayed.",
+      "hint": "The first next() already consumed the first item.",
+      "rejected": [
+        "a",
+        "b"
+      ]
+    },
+    "python-advanced-bug": {
+      "accepted": [
+        "yield n"
+      ],
+      "explanation": "yield n emits each value and allows the loop to resume on the next request.",
+      "incorrect": "return ends the function on its first loop iteration.",
+      "hint": "A generator emits values with yield.",
+      "rejected": [
+        "return n"
+      ]
+    },
+    "python-advanced-fill": {
+      "accepted": [
+        "next(stream)"
+      ],
+      "explanation": "next(stream) advances the iterator once and returns 0.",
+      "incorrect": "Use next() on the iterator, not on its source range.",
+      "hint": "Pass stream into next().",
+      "rejected": [
+        "list(stream)"
+      ]
+    },
+    "sql-beginner-quiz": {
+      "accepted": [
+        "a"
+      ],
+      "explanation": "WHERE filters rows according to a condition.",
+      "incorrect": "SELECT chooses columns and ORDER BY sorts; neither is the row filter.",
+      "hint": "The row filter appears after FROM.",
+      "rejected": [
+        "b",
+        "c"
+      ]
+    },
+    "sql-beginner-bug": {
+      "accepted": [
+        "age >= 18",
+        "AGE >= 18"
+      ],
+      "explanation": ">= includes the boundary age 18 as well as older learners.",
+      "incorrect": "> excludes learners who are exactly 18.",
+      "hint": "Use the greater-than-or-equal operator.",
+      "rejected": [
+        "age > 18"
+      ]
+    },
+    "sql-beginner-fill": {
+      "accepted": [
+        "name",
+        "NAME"
+      ],
+      "explanation": "The name column contains each learner's name.",
+      "incorrect": "Return the requested column, not every column.",
+      "hint": "The table has id, name and age columns.",
+      "rejected": [
+        "*"
+      ]
+    },
+    "sql-intermediate-quiz": {
+      "accepted": [
+        "b"
+      ],
+      "explanation": "HAVING applies an aggregate condition to each group.",
+      "incorrect": "WHERE is evaluated before grouping and cannot filter these aggregate results.",
+      "hint": "Filter the groups, not the source rows.",
+      "rejected": [
+        "a",
+        "c"
+      ]
+    },
+    "sql-intermediate-bug": {
+      "accepted": [
+        "HAVING",
+        "having"
+      ],
+      "explanation": "HAVING filters the grouped SUM(amount) result.",
+      "incorrect": "An aggregate filter after GROUP BY uses HAVING.",
+      "hint": "Use the keyword introduced for filtering groups.",
+      "rejected": [
+        "WHERE"
+      ]
+    },
+    "sql-intermediate-fill": {
+      "accepted": [
+        "COUNT(*)",
+        "count(*)"
+      ],
+      "explanation": "COUNT(*) counts every row; COUNT(amount) would skip NULL amounts.",
+      "incorrect": "Use the row-count form, not a count of one nullable column.",
+      "hint": "Put * inside COUNT().",
+      "rejected": [
+        "COUNT(amount)"
+      ]
+    },
+    "sql-advanced-quiz": {
+      "accepted": [
+        "c"
+      ],
+      "explanation": "Each team gets its own independent window, while rows are preserved.",
+      "incorrect": "Window partitioning does not collapse rows or guarantee final output order.",
+      "hint": "Think of a separate running calculation per team.",
+      "rejected": [
+        "a",
+        "b"
+      ]
+    },
+    "sql-advanced-bug": {
+      "accepted": [
+        "ORDER BY amount DESC, id ASC",
+        "order by amount desc, id asc",
+        "ORDER BY AMOUNT DESC, ID ASC"
+      ],
+      "explanation": "The unique id breaks ties between equal amounts, making row numbering deterministic.",
+      "incorrect": "Ordering only by amount leaves tied rows without a defined relative order.",
+      "hint": "Add id ASC after amount DESC.",
+      "rejected": [
+        "ORDER BY amount DESC"
+      ]
+    },
+    "sql-advanced-fill": {
+      "accepted": [
+        "UNBOUNDED PRECEDING",
+        "unbounded preceding"
+      ],
+      "explanation": "UNBOUNDED PRECEDING starts the frame at the first row in the partition.",
+      "incorrect": "A fixed preceding offset does not include every earlier row.",
+      "hint": "Use the unbounded start before the current row.",
+      "rejected": [
+        "1 PRECEDING"
+      ]
+    },
+    "git-beginner-quiz": {
+      "accepted": [
+        "a"
+      ],
+      "explanation": "git add notes.py copies the current file version into the index.",
+      "incorrect": "Staging happens before a normal commit; push sends commits to a remote.",
+      "hint": "The staging command is git add.",
+      "rejected": [
+        "b",
+        "c"
+      ]
+    },
+    "git-beginner-bug": {
+      "accepted": [
+        "git add notes.py"
+      ],
+      "explanation": "git add stages the named file locally.",
+      "incorrect": "git push does not stage individual working files.",
+      "hint": "Use git add with the file name.",
+      "rejected": [
+        "git push notes.py"
+      ]
+    },
+    "git-beginner-fill": {
+      "accepted": [
+        "commit"
+      ],
+      "explanation": "git commit records the staged snapshot with the supplied message.",
+      "incorrect": "The required operation creates a local commit, not a remote push.",
+      "hint": "The subcommand is the word for a recorded snapshot.",
+      "rejected": [
+        "push"
+      ]
+    },
+    "git-intermediate-quiz": {
+      "accepted": [
+        "b"
+      ],
+      "explanation": "git merge brings the named source branch into the currently checked-out destination branch.",
+      "incorrect": "Merging from the wrong destination updates the wrong branch.",
+      "hint": "Check out the branch that should receive the changes.",
+      "rejected": [
+        "a",
+        "c"
+      ]
+    },
+    "git-intermediate-bug": {
+      "accepted": [
+        "git switch -c feature/notes"
+      ],
+      "explanation": "git switch -c both creates and checks out the new branch.",
+      "incorrect": "git branch creates a branch but leaves the current branch checked out.",
+      "hint": "Use git switch with its create flag, -c.",
+      "rejected": [
+        "git branch feature/notes"
+      ]
+    },
+    "git-intermediate-fill": {
+      "accepted": [
+        "feature/notes"
+      ],
+      "explanation": "The argument names the branch whose work is brought into the current branch.",
+      "incorrect": "main is the destination already checked out, not the source to merge.",
+      "hint": "Use the feature branch name from the lesson.",
+      "rejected": [
+        "main"
+      ]
+    },
+    "git-advanced-quiz": {
+      "accepted": [
+        "c"
+      ],
+      "explanation": "git revert abc1234 records a new reversing commit without removing shared history.",
+      "incorrect": "reset rewrites the branch position; restore changes file/index content, not a reversing commit.",
+      "hint": "Choose the operation that preserves existing history.",
+      "rejected": [
+        "a",
+        "b"
+      ]
+    },
+    "git-advanced-bug": {
+      "accepted": [
+        "git restore --staged notes.py"
+      ],
+      "explanation": "--staged targets the index; the working-tree edits stay intact.",
+      "incorrect": "Without --staged, restore targets the working tree and may discard the edits.",
+      "hint": "Add --staged before the path.",
+      "rejected": [
+        "git restore notes.py"
+      ]
+    },
+    "git-advanced-fill": {
+      "accepted": [
+        "revert"
+      ],
+      "explanation": "revert creates a new commit that applies the inverse of the selected commit.",
+      "incorrect": "Do not rewrite shared history with reset for this exercise.",
+      "hint": "The history-preserving undo command is revert.",
+      "rejected": [
+        "reset"
+      ]
+    }
+  }
+}

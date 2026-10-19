@@ -14,6 +14,7 @@ from starlette.exceptions import HTTPException
 
 from .contract import DOCUMENT, normalize_input, valid
 from .storage import MemoryStorage, StorageUnavailable
+from .curriculum import Curriculum
 
 
 class ApiError(Exception):
@@ -54,6 +55,7 @@ def create_app(storage=None, clock=utcnow):
     app.openapi = lambda: deepcopy(DOCUMENT)
     app.state.storage = storage if storage is not None else MemoryStorage()
     app.state.clock = clock
+    app.state.curriculum = Curriculum()
     app.state.hasher = PasswordHasher()  # Argon2id defaults; random salt per hash.
     app.state.dummy_hash = app.state.hasher.hash(secrets.token_urlsafe(32))
 
@@ -171,7 +173,43 @@ def create_app(storage=None, clock=utcnow):
             account['learner']['name'] = data['name']
         return Response(status_code=204)
 
-    # Further stage-three routes are added only after foundation QA passes.
+    def unit_id(request):
+        value = request.path_params['unitId']
+        if not valid('Identifier', value):
+            raise ApiError(422, 'validation', 'Unit identifier is invalid.')
+        if not app.state.curriculum.has_unit(value):
+            raise ApiError(404, 'not-found', 'This unit is unavailable.')
+        return value
+
+    @app.patch('/api/v1/me/preferences', status_code=204)
+    def preferences(request: Request):
+        with app.state.storage.transaction() as state:
+            account, _ = current(request, state)
+            data = body(request, 'PreferencesInput')
+            learner = account['learner']
+            learner['activeTrack'] = data['track']
+            learner['levels'][data['track']] = data['level']
+            if data.get('onboarded'):
+                learner['onboarded'] = True
+        return Response(status_code=204)
+
+    @app.get('/api/v1/me/snapshot')
+    def snapshot(request: Request):
+        with app.state.storage.transaction() as state:
+            account, _ = current(request, state)
+            return {'learner': deepcopy(account['learner']), 'units': app.state.curriculum.public_units(),
+                    'progress': deepcopy(account['progress']), 'attempts': deepcopy(account['attempts'])}
+
+    @app.put('/api/v1/me/units/{unitId}/lesson-read', status_code=204)
+    def mark_read(request: Request):
+        with app.state.storage.transaction() as state:
+            account, _ = current(request, state)
+            unit = unit_id(request)
+            body(request, 'LessonReadInput')
+            account['progress'].setdefault(unit, {'read': False, 'exercises': {}})['read'] = True
+        return Response(status_code=204)
+
+    # Practice routes are added only after curriculum QA passes.
     return app
 
 
