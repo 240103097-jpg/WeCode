@@ -1,7 +1,7 @@
 # WeCode — Project Specification and Brainstorming Record
 
 Date: 19 October 2026. Submission target: 20 October 2026 (Asia/Almaty); exact submission time unknown.
-Status: initial specification based on the visible planning conversation. This document describes intended behavior, not implemented functionality.
+Status: frontend-stage specification. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. Backend behavior remains a later-stage requirement.
 
 ## 1. Goal and audience
 
@@ -21,27 +21,11 @@ WeCode is an English-language application for learning programming and improving
 - Saved learning progress and attempt results.
 - English interface and educational content.
 
-## 3. Proposed implementation rules
+## 3. Selected frontend rules
 
-These details make the MVP implementable; they are proposals rather than verbatim user decisions.
+Owner-confirmed target: 9 short units (one per track/level), with one lesson and three exercise types each: 27 exercises. Marking the lesson read and correctly submitting all three exercises completes a unit. Assisted work counts toward completion but is labeled separately from independent work. Retries do not duplicate credit; there is no XP/scoring.
 
-### Onboarding and navigation
-
-After registration, the learner selects a track and a level. A dashboard shows the selected learning path and progress. The learner can switch tracks and change a track's level without deleting previous attempts. Previously completed lessons remain accessible.
-
-### Content boundary
-
-Initial proposal: one learning unit for every track/level combination: 3 tracks × 3 levels = 9 units. Each unit contains one short lesson and one exercise of each type: 9 × 3 = 27 exercises. This is a planning target, not an existing content inventory or a delivery guarantee.
-
-### Answer checking
-
-Use authored answer keys and explicit normalization rules per exercise. Quiz answers use stable option identifiers. Text answers use exercise-specific accepted answers, with handling of surrounding whitespace documented. This MVP does not execute arbitrary submitted programs and must not claim to validate all semantically equivalent code.
-
-An incorrect answer keeps the exercise retryable. Show Solution reveals the authored solution and explanation. A solution reveal is recorded separately from an independently correct answer. Attempts and feedback are associated with the signed-in learner.
-
-### Progress
-
-Suggested formula: completed units / total units in the selected track and level × 100. A unit is complete after its lesson is marked read and all three exercises are answered correctly without a prior solution reveal. Assisted exercises can be revisited for learning but remain labeled assisted. These completion and scoring rules require review before implementation; avoid adding a points system until its rules are defined.
+Hints follow an incorrect answer; Show Solution is a separate action. Answer checking uses authored rules and never executes learner code. Detailed normalization, history, progress formulas and explicitly delegated mock authentication defaults are in [docs/decisions.md](docs/decisions.md). Design is selected under owner delegation in [docs/design-system.md](docs/design-system.md).
 
 ## 4. Screens
 
@@ -64,7 +48,7 @@ Proposed screens: sign up, sign in, track/level onboarding, dashboard, learning 
 
 ## 6. Technical approach and assignment process
 
-Stack proposal, not yet selected: React/TypeScript frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
+Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for later stages. Only the frontend with mockService is authorized in this stage. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
 
 Follow the assignment's iteration order:
 1. Interactive frontend using mockService.
