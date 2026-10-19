@@ -46,11 +46,48 @@ async function stop(child){if(!child||child.exitCode!==null)return;child.kill('S
   await page.getByRole('button',{name:/Complete the Code/}).click();await page.getByRole('textbox',{name:/Your answer/}).fill('echo');await page.getByRole('button',{name:'Check answer →'}).click();await page.getByText('Not quite. Give it another try.',{exact:true}).waitFor();await page.getByRole('textbox',{name:/Your answer/}).fill('print');await page.getByRole('button',{name:'Try again →'}).click();await page.getByText('Correct · independently solved',{exact:true}).waitFor();await page.getByText('Unit complete',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Check answer →'}).click();await page.getByText('Correct · independently solved',{exact:true}).waitFor();
   console.log('Browser: all3types/retry complete');
+  if(process.env.WECODE_AUDIT_ALL_UNITS==='1'){
+   const authored=JSON.parse(fs.readFileSync(path.join(root,'backend/data/curriculum.json'),'utf8'));
+   for(const unit of authored.units){
+    await page.getByRole('link',{name:'Learning Paths',exact:true}).click();
+    await page.getByRole('heading',{name:'A level for every path.'}).waitFor();
+    await page.getByRole('button',{name:new RegExp(unit.track+' ')}).click();
+    await page.getByLabel(unit.track+' level').selectOption(unit.level);
+    await page.getByRole('button',{name:'Save learning preferences',exact:true}).click();
+    await page.getByRole('heading',{name:'A level for every path.'}).waitFor();
+    await page.getByRole('link').filter({hasText:unit.title}).first().click();
+    await page.getByRole('heading',{level:1,name:unit.title,exact:true}).waitFor();
+    const read=page.getByRole('button',{name:'Mark lesson as read',exact:true});
+    if(await read.count()){await read.click();await page.getByRole('button',{name:'✓ Lesson marked read'}).waitFor();}
+    for(const exercise of unit.exercises){
+     const rule=authored.answerRules[exercise.id];
+     await page.getByRole('button',{name:new RegExp(exercise.type)}).click();
+     const answer=async value=>{if(exercise.type==='Quiz')await page.locator('input[type=radio]').nth(exercise.options.findIndex(option=>option.id===value)).check();else await page.getByRole('textbox',{name:/Your answer/}).fill(value);};
+     await answer(rule.rejected[0]);await page.getByRole('button',{name:/Check answer →|Try again →/}).click();await page.getByText('Not quite. Give it another try.',{exact:true}).waitFor();
+     await page.getByRole('button',{name:'Get a hint',exact:true}).click();await page.getByText(rule.hint,{exact:true}).waitFor();
+     if(exercise.type==='Fix the Bug'){await page.getByRole('button',{name:'Show Solution',exact:true}).click();await page.getByText('AUTHORED SOLUTION · ASSISTED WORK',{exact:true}).waitFor();}
+     await answer(rule.accepted[0]);await page.getByRole('button',{name:'Try again →'}).click();await page.getByText(exercise.type==='Fix the Bug'?'Correct · assisted':'Correct · independently solved',{exact:true}).waitFor();
+    }
+    await page.getByText('Unit complete',{exact:true}).waitFor();await page.getByRole('button',{name:'Check answer →',exact:true}).click();await page.getByText('Correct · independently solved',{exact:true}).waitFor();
+    console.log('Final audit unit PASS: '+unit.track+'/'+unit.level+' lesson+3exercise types/hints/assistance/retry');
+   }
+   await page.setViewportSize({width:320,height:850});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(folder,'mobile-lesson-all-units.png'),fullPage:true});await page.setViewportSize({width:1440,height:1000});
+  }
   const snapshot=()=>page.evaluate(async()=>{const token=JSON.parse(sessionStorage.getItem('wecode.api.session.v1')).accessToken;const response=await fetch('/api/v1/me/snapshot',{headers:{Authorization:'Bearer '+token}});return await response.json();});
-  const expected=await snapshot();assert.equal(expected.attempts.length,7);assert.equal(Object.values(expected.progress['python-beginner'].exercises).filter(ex=>ex.independent).length,2);assert.equal(expected.progress['python-beginner'].exercises['python-beginner-bug'].revealed,true);assert.equal(expected.progress['python-beginner'].exercises['python-beginner-quiz'].hintCount,1);assert.equal(expected.units.length,9);assert(!JSON.stringify(expected.units).includes('accepted'));
+  const expected=await snapshot();assert.equal(expected.attempts.length,process.env.WECODE_AUDIT_ALL_UNITS==='1'?70:7);assert.equal(Object.values(expected.progress['python-beginner'].exercises).filter(ex=>ex.independent).length,2);assert.equal(expected.progress['python-beginner'].exercises['python-beginner-bug'].revealed,true);assert.equal(expected.progress['python-beginner'].exercises['python-beginner-quiz'].hintCount,process.env.WECODE_AUDIT_ALL_UNITS==='1'?2:1);assert.equal(expected.units.length,9);assert(!JSON.stringify(expected.units).includes('accepted'));
   await page.reload();await page.getByText('Unit complete',{exact:true}).waitFor();assert.deepEqual(await snapshot(),expected);
   const firstPid=backend.pid;await stop(backend);await startBackend();assert.notEqual(backend.pid,firstPid);await page.reload();await page.getByText('Unit complete',{exact:true}).waitFor();assert.deepEqual(await snapshot(),expected);
   await page.getByRole('link',{name:'Progress',exact:true}).click();await page.getByText('1 of 9 units complete',{exact:true}).waitFor();await page.screenshot({path:path.join(folder,'desktop-progress.png'),fullPage:true});
+  // Independent QA regression for observed #23: title/stats must never collide.
+  for(const width of [1440,320,375]){
+   await page.setViewportSize({width,height:850});
+   const rows=await page.locator('.progress-unit').evaluateAll(elements=>elements.map(row=>{
+    const title=row.querySelector('strong').getBoundingClientRect(),stats=row.querySelector('.progress-unit-stats').getBoundingClientRect(),outer=row.getBoundingClientRect();
+    return {title:row.querySelector('strong').textContent,overlap:title.left<stats.right&&title.right>stats.left&&title.top<stats.bottom&&title.bottom>stats.top,inside:title.left>=outer.left&&title.right<=outer.right&&stats.left>=outer.left&&stats.right<=outer.right};
+   }));
+   assert.equal(rows.length,9);assert(rows.every(row=>!row.overlap&&row.inside),'Progress title/stats geometry at '+width+': '+JSON.stringify(rows));
+   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Page overflow at '+width);
+  }
   await page.setViewportSize({width:320,height:850});await page.screenshot({path:path.join(folder,'mobile-progress.png'),fullPage:true});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.getByRole('button',{name:'Menu',exact:true}).click();await page.getByRole('link',{name:'Settings',exact:true}).click();await page.getByRole('heading',{name:'A space that feels like you.'}).waitFor();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.equal(await page.getByRole('button',{name:'Test service recovery'}).count(),0);await page.getByLabel('Display name',{exact:true}).fill('Renamed Browser Learner');await page.getByRole('button',{name:'Save profile',exact:true}).click();await page.getByRole('status').filter({hasText:'Profile saved.'}).waitFor();expected.learner.name='Renamed Browser Learner';
   await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.getByRole('heading',{name:'Make room for learning.'}).waitFor();assert.equal(await page.evaluate(()=>sessionStorage.getItem('wecode.api.session.v1')),null);assert.equal(await page.getByText('Renamed Browser Learner',{exact:true}).count(),0);await page.getByLabel('Display name',{exact:true}).fill('Duplicate Name');await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Password',{exact:true}).fill(password);await page.getByRole('button',{name:'Create account →',exact:true}).click();await page.getByRole('alert').filter({hasText:'An account already uses this email.'}).waitFor();assert(await page.getByRole('heading',{name:'Make room for learning.'}).isVisible());
   await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Password',{exact:true}).fill(password);await page.getByRole('button',{name:'Sign in →',exact:true}).click();await page.getByRole('heading',{name:'Overview',exact:true}).waitFor();assert.deepEqual(await snapshot(),expected);

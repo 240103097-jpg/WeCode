@@ -2,7 +2,7 @@
 
 Read [the specification](WeCode_Project_Specification.md), [process](docs/process.md) and the current GitHub issue before working. Inspect the checkout, Git status, nested AGENTS.md files and remote state each session; never assume another session's files or commits exist. Preserve unrelated work. Never force-push or overwrite remote changes.
 
-Current stage: owner-authorized frontend/backend integration only (#17). Preserve retro design/product rules and existing mock records. Real API is default; mock mode is explicit dev/test only, never a fallback. Use project data/wecode.sqlite3 for normal local SQLite, temporary DBs only for tests. DATABASE_URL and VITE_API_BASE_URL configure services; keep DB access behind Storage. Independent QA must verify actual browser/network/restart/offline/mobile flows. Do not claim final submission audit #18 complete.
+Current stage: owner-authorized final submission audit only (#18). Verify actual history/clean setup/application, preserve retro design/product rules and existing learner/mock data. Do not deploy or submit. Missing genuine original planning transcript (#4) blocks assignment readiness and #18 closure; never fabricate it or treat the summary as a verbatim export. Independent QA records actual results and alone closes issues only after every criterion passes. Keep normal project DB in ignored data/wecode.sqlite3 and test only isolated temporary databases.
 
 Use [GitHub Issues](https://github.com/240103097-jpg/WeCode/issues) as the only active backlog. Read [task template](docs/task-template.md). Search all existing issues before creating tasks. Labels: `mvp`, `post-mvp`, `user-test-bug`; the last is only for observed defects.
 
@@ -18,4 +18,4 @@ Backend commands from repository root (Python 3.13 verified): create `/tmp/wecod
 
 Persistence verification additionally runs `/tmp/wecode-backend-venv/bin/python backend/scripts/check_restart.py` (three real processes, isolated temporary SQLite database). API test fixtures run both memory regression and temporary SQLite variants; never point tests at real learner databases. Default runtime requires DATABASE_URL and uses SQLStorage. Only SQLite is verified; do not claim another database works.
 
-Integration #17 and observed bugs #21/#22 passed independent QA at 45574230a5c82b13a859454226fd3887561db401 and are closed. Preserve this stage boundary; final submission audit #18 requires the next owner instruction. Evidence: docs/qa/integration.md.
+Integration #17 and observed bugs #21/#22 passed independent QA at 45574230a5c82b13a859454226fd3887561db401 and are closed. Their evidence is historical; the owner now authorizes final audit #18, with genuine transcript still required for readiness. Evidence: docs/qa/integration.md.
