@@ -7,3 +7,6 @@ coverage/
 
 __pycache__/
 .venv-contract/
+
+.venv-backend/
+.pytest_cache/
