@@ -77,7 +77,7 @@ async function stop(child){if(!child||child.exitCode!==null)return;child.kill('S
   const expected=await snapshot();assert.equal(expected.attempts.length,process.env.WECODE_AUDIT_ALL_UNITS==='1'?70:7);assert.equal(Object.values(expected.progress['python-beginner'].exercises).filter(ex=>ex.independent).length,2);assert.equal(expected.progress['python-beginner'].exercises['python-beginner-bug'].revealed,true);assert.equal(expected.progress['python-beginner'].exercises['python-beginner-quiz'].hintCount,process.env.WECODE_AUDIT_ALL_UNITS==='1'?2:1);assert.equal(expected.units.length,9);assert(!JSON.stringify(expected.units).includes('accepted'));
   await page.reload();await page.getByText('Unit complete',{exact:true}).waitFor();assert.deepEqual(await snapshot(),expected);
   const firstPid=backend.pid;await stop(backend);await startBackend();assert.notEqual(backend.pid,firstPid);await page.reload();await page.getByText('Unit complete',{exact:true}).waitFor();assert.deepEqual(await snapshot(),expected);
-  await page.getByRole('link',{name:'Progress',exact:true}).click();await page.getByText('1 of 9 units complete',{exact:true}).waitFor();await page.screenshot({path:path.join(folder,'desktop-progress.png'),fullPage:true});
+  await page.getByRole('link',{name:'Progress',exact:true}).click();await page.getByText(process.env.WECODE_AUDIT_ALL_UNITS==='1'?'9 of 9 units complete':'1 of 9 units complete',{exact:true}).waitFor();await page.screenshot({path:path.join(folder,'desktop-progress.png'),fullPage:true});
   // Independent QA regression for observed #23: title/stats must never collide.
   for(const width of [1440,320,375]){
    await page.setViewportSize({width,height:850});
