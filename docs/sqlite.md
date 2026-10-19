@@ -38,3 +38,5 @@ Run the full backend suite against temporary SQLite and memory regression varian
 No browser-local mock records are migrated or touched, and no real frontend networking/UI changes are made. Persistence and API tests do not claim final UI/API/database integration verification.
 
 Primary references inspected: [SQLAlchemy Session transactions](https://docs.sqlalchemy.org/en/20/orm/session_basics.html) and [SQLite dialect/connection behavior](https://docs.sqlalchemy.org/en/20/dialects/sqlite.html). No API contract change is needed.
+
+Full criterion evidence and reviewed revisions are recorded in [independent SQLite QA](qa/sqlite.md). Both issues are closed by QA after PASS.
