@@ -66,3 +66,25 @@ describe('authored practice behavior',()=>{
   await expect(service.submit({...input,answer:'  '})).rejects.toThrow('1 and 4,000');await expect(service.submit({...input,answer:'x'.repeat(4001)})).rejects.toThrow('1 and 4,000');
  });
 });
+
+describe('saved completion and history',()=>{
+ it('counts a unit once across retries, reveal and reload without erasing history on level changes',async()=>{
+  await service.register({name:'Learner',email:'learner@example.test'});const unit=units[0];
+  for(const ex of unit.exercises)await service.submit({unitId:unit.id,exerciseId:ex.id,answer:answerRules[ex.id].accepted[0]});
+  expect(unitStatus(unit,(await service.snapshot()).progress[unit.id]).complete).toBe(false);
+  await service.markRead(unit.id);await service.markRead(unit.id);
+  await service.solution({unitId:unit.id,exerciseId:unit.exercises[0].id});
+  await service.submit({unitId:unit.id,exerciseId:unit.exercises[0].id,answer:answerRules[unit.exercises[0].id].accepted[0]});
+  await service.preferences({track:'Python',level:'Advanced'});await service.preferences({track:'SQL',level:'Intermediate'});
+  const restored=createMockService({getItem:k=>values.get(k)??null,setItem:(k,v)=>{values.set(k,v);}},0);const saved=await restored.snapshot();
+  expect(unitStatus(unit,saved.progress[unit.id])).toEqual({complete:true,solved:3,independent:3,steps:4});expect(saved.units.filter(u=>unitStatus(u,saved.progress[u.id]).complete)).toHaveLength(1);
+  expect(saved.attempts).toHaveLength(4);expect(saved.attempts[3].assisted).toBe(true);expect(saved.progress[unit.id].exercises[unit.exercises[0].id].revealed).toBe(true);
+  await restored.profile({name:'Renamed'});expect((await restored.session())?.name).toBe('Renamed');await expect(restored.profile({name:' '})).rejects.toThrow('2–60');
+  const before=values.get(STORAGE_KEY);await restored.simulateFailure();await expect(restored.snapshot()).rejects.toThrow('unchanged');expect(values.get(STORAGE_KEY)).toBe(before);expect((await restored.snapshot()).attempts).toHaveLength(4);
+ });
+ it('isolates saved attempts and progress between local accounts',async()=>{
+  await service.register({name:'First',email:'first@example.test'});await service.markRead(units[0].id);await service.submit({unitId:units[0].id,exerciseId:units[0].exercises[0].id,answer:'a'});
+  await service.logout();await service.register({name:'Second',email:'second@example.test'});const second=await service.snapshot();expect(second.attempts).toHaveLength(0);expect(second.progress).toEqual({});
+  await service.login({email:'first@example.test',passphrase:'practice-only'});expect((await service.snapshot()).attempts).toHaveLength(1);
+ });
+});

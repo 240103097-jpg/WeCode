@@ -27,7 +27,7 @@ Use dark #101210 text on yellow/green filled buttons. Calculate WCAG contrast wi
 
 ## Layout and type
 
-Desktop sidebar 228px; main width up to 1280px, 40px padding. Header gives page context and profile. Overview has one prominent Continue Learning panel with a small code excerpt, three concise track summaries, and real checklist/progress. Learning paths and progress favor rows over repetitive grids. Lessons use a readable 60–70 character text column beside a focused exercise panel. Below 900px stack the workspace; below 700px replace sidebar with an expandable labeled navigation menu. Maintain usable 320px width and allow code blocks to scroll locally.
+Desktop sidebar 228px; main width up to 1280px, 40px padding. Header gives page context and profile. Overview has one prominent Continue Learning panel with a small code excerpt, three concise track summaries, and real checklist/progress. Learning paths and progress favor rows over repetitive grids. Lessons use a readable 60–70 character text column beside a focused exercise panel. Below 1100px stack the workspace; below 700px replace sidebar with an expandable labeled navigation menu. Maintain usable 320px width and allow code blocks to scroll locally.
 
 System sans-serif for UI; ui-monospace/SFMono-Regular/Menlo for code. Body 16px, line-height 1.6; page headings 32–44px. Spacing scale 4/8/12/16/24/32/40/56px, corners 8–16px. No gradients, glow, decorative achievements, fake activity or XP. Transitions are subtle and respect reduced motion.
 
