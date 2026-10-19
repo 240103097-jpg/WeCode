@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit #18 verifies the technical evidence, but submission readiness is BLOCKED by the missing genuine original transcript (#4). No deployment or instructor submission is claimed.
+WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit #18 verifies the technical evidence, but submission readiness is BLOCKED by the incomplete original planning history (#4; genuine partial manual copy supplied). No deployment or instructor submission is claimed.
 
 ## Run the complete app locally
 
@@ -88,6 +88,8 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 
 ## Project documents
 
+- [Partial manual brainstorming transcript](docs/brainstorming-transcript.md)
+- [Original assignment screenshot and comparison](docs/submission-checklist.md#actual-assignment-screenshot-comparison)
 - [Specification and preserved brainstorming summary](WeCode_Project_Specification.md)
 - [Agent instructions](AGENTS.md)
 - [Selected stack and delegated defaults](docs/decisions.md)
@@ -110,7 +112,7 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 - [Task issue template](.github/ISSUE_TEMPLATE/task.md), [observed user-test-bug template](.github/ISSUE_TEMPLATE/user-test-bug.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
-PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.
+PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The [user-provided partial manual transcript](docs/brainstorming-transcript.md) is preserved; omitted original planning messages are still needed under #4/#18. The separate summary is not verbatim and the manual copy is not an automated export.
 
 ## SQLite backend
 

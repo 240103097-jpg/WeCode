@@ -2,7 +2,7 @@
 
 Read [the specification](WeCode_Project_Specification.md), [process](docs/process.md) and the current GitHub issue before working. Inspect the checkout, Git status, nested AGENTS.md files and remote state each session; never assume another session's files or commits exist. Preserve unrelated work. Never force-push or overwrite remote changes.
 
-Current stage: owner-authorized final submission audit only (#18). Verify actual history/clean setup/application, preserve retro design/product rules and existing learner/mock data. Do not deploy or submit. Missing genuine original planning transcript (#4) blocks assignment readiness and #18 closure; never fabricate it or treat the summary as a verbatim export. Independent QA records actual results and alone closes issues only after every criterion passes. Keep normal project DB in ignored data/wecode.sqlite3 and test only isolated temporary databases.
+Current stage: owner-authorized final submission audit only (#18). Verify actual history/clean setup/application, preserve retro design/product rules and existing learner/mock data. Do not deploy or submit. Only a partial manual original-planning transcript has been supplied; omitted history under #4 blocks readiness and #18 closure; never fabricate it or treat the summary as a verbatim export. Independent QA records actual results and alone closes issues only after every criterion passes. Keep normal project DB in ignored data/wecode.sqlite3 and test only isolated temporary databases.
 
 Use [GitHub Issues](https://github.com/240103097-jpg/WeCode/issues) as the only active backlog. Read [task template](docs/task-template.md). Search all existing issues before creating tasks. Labels: `mvp`, `post-mvp`, `user-test-bug`; the last is only for observed defects.
 
@@ -21,3 +21,5 @@ Persistence verification additionally runs `/tmp/wecode-backend-venv/bin/python 
 Integration #17 and observed bugs #21/#22 passed independent QA at 45574230a5c82b13a859454226fd3887561db401 and are closed. Their evidence is historical; the owner now authorizes final audit #18, with genuine transcript still required for readiness. Evidence: docs/qa/integration.md.
 
 Final audit technical verification passed at cc53f0c; independent document review at a501ccb recorded QA FAIL overall because genuine original transcript criterion is BLOCKED. #4/#18 remain open mvp, #23 observed mobile bug is QA-closed. No submission-readiness/deployment/submission claim is authorized; see docs/qa/final-audit.md.
+
+Owner-supplied materials follow-up: docs/brainstorming-transcript.md is a ten-message partial manual copy, not an automated export. Preserve wording/order and do not invent omissions. Actual assignment screenshot is docs/references/assignment.png; compare its clauses in submission-checklist.md. Screenshot access is resolved, while existing #4/#18 full-history completeness remains for independent QA.

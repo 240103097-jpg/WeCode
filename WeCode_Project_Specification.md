@@ -1,7 +1,7 @@
 # WeCode — Project Specification and Brainstorming Record
 
 Date: 19 October 2026. Submission target: 20 October 2026 (Asia/Almaty); exact submission time unknown.
-Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit is running, but readiness is BLOCKED by missing genuine original transcript (#4).
+Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit is running, but readiness is BLOCKED by incomplete original history (#4; partial manual transcript now supplied).
 
 ## 1. Goal and audience
 
@@ -72,7 +72,7 @@ Check registration, login, authorization boundaries, all exercise types, normali
 
 ## 9. Brainstorming record
 
-This is an honest summary of the visible discussion, not a verbatim full chat export. The full original planning transcript still needs to be added for the assignment. The original transcript is not available in this checkout; the owner must supply a genuine export. Do not reconstruct or fabricate missing conversation.
+This is an honest summary of the visible discussion, not a verbatim full chat export. A genuine [user-provided manual partial transcript](docs/brainstorming-transcript.md) now preserves ten original messages; it is not an automated export or complete history. Earlier ideation/selection and other omitted turns remain needed under existing #4/#18 full-history criteria. Do not reconstruct or fabricate missing conversation.
 
 1. The user requested that the assignment be divided into steps and completed gradually.
 2. Several unrelated app ideas were discussed and rejected.
@@ -90,7 +90,7 @@ This is an honest summary of the visible discussion, not a verbatim full chat ex
 ## 10. Sources and precedence
 
 - Primary product decisions: the visible conversation with the user on 19 October 2026.
-- Assignment: supplied screenshot, “Снимок экрана 2026-10-19 в 14.51.59.png”.
+- Assignment: original screenshot now supplied as codex-clipboard-3639f1c8-7eb5-4005-824a-35bb2ca6fba3.png and preserved in [docs/references/assignment.png](docs/references/assignment.png); actual comparison is in the submission checklist.
 - Process reference: https://aishippingblog.com/p/ai-native-development-specifications
 - Build reference: https://aishippingblog.com/p/build-and-ship-a-full-stack-app-with
 

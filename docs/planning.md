@@ -35,3 +35,7 @@ Publication verified: 19 open issues, each with Goal, Acceptance criteria, Out o
 ## Frontend-stage update
 
 The owner has now selected React/TypeScript/Vite and later Python/FastAPI/SQLAlchemy/SQLite, delegated detailed dark yellow/green visual design, confirmed 9 units/27 exercises and completion with assisted work, and authorized explicit implementation defaults. See [current decisions](decisions.md) and [design references](design-system.md). Earlier unselected items above are historical, not current blockers. Genuine original transcript and exact submission time remain missing. No OpenAPI/backend/SQLite implementation is authorized in the frontend stage.
+
+## Original-material follow-up
+
+The owner subsequently supplied the actual assignment screenshot and a genuine ten-message manual partial ChatGPT copy. See [partial transcript](brainstorming-transcript.md) and [actual screenshot comparison](submission-checklist.md#actual-assignment-screenshot-comparison). Earlier absence statements above describe the historical planning inspection. The screenshot does not mandate automated export or explicitly say full transcript; existing #4/#18 full-history criteria still require omitted original turns. No missing wording is reconstructed.

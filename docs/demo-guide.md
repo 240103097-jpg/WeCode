@@ -1,6 +1,6 @@
 # WeCode demonstration guide
 
-Technical demo verified October 19, 2026. **Submission readiness remains blocked by missing genuine planning transcript (#4); #18 is not a submission certificate.** Never demonstrate with an existing learner's credentials/data or delete a database to reset the demo.
+Technical demo verified October 19, 2026. **Submission readiness remains blocked by incomplete original planning history (#4; partial manual copy supplied); #18 is not a submission certificate.** Never demonstrate with an existing learner's credentials/data or delete a database to reset the demo.
 
 ## Start the complete app
 

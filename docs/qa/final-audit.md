@@ -1,6 +1,6 @@
 # Final submission audit — issue #18
 
-Date: October 19, 2026, Asia/Almaty. **Overall submission audit: BLOCKED (QA FAIL for unmet required criterion), not submission-ready.** Technical application checks pass. The genuine full original planning transcript/export and provenance are missing (#4). Neither the existing summary nor this conversation summary is represented as the original transcript. #4 and #18 remain required `mvp` issues and open; no unfinished requirement was relabeled post-MVP.
+Date: October 19, 2026, Asia/Almaty. **Overall submission audit: BLOCKED (QA FAIL for unmet required criterion), not submission-ready.** Technical application checks pass. The initial audit lacked original planning messages; a subsequent genuine partial manual copy is now preserved, but full-history completeness remains unresolved under #4. Neither the existing summary nor this conversation summary is represented as the original transcript. #4 and #18 remain required `mvp` issues and open; no unfinished requirement was relabeled post-MVP.
 
 ## Scope, environment and revisions
 
@@ -107,8 +107,16 @@ The reviewer independently verified29 tracked Markdown files and103 relative tar
 
 ## Remaining requirements and limitations
 
-- **BLOCKED:** owner must provide the genuine full original planning transcript/export with provenance for review (#4). The summary remains explicitly non-verbatim and preserved.
-- **BLOCKED verification limit:** the original assignment screenshot is not committed/available to compare; audit covers supplied textual requirements, not unseen rubric details. No extra requirement to redistribute it is invented.
+- **BLOCKED — partial evidence supplied:** owner provided ten original messages as a manual partial copy with provenance; omitted earlier ideation/selection and other missing turns still prevent the existing full-history criterion passing (#4). The summary remains separate and non-verbatim.
+- **RESOLVED source-access limit:** original assignment screenshot is now preserved in docs/references/assignment.png and every visible clause compared in the submission checklist. Initial screenshot-absence statements above record the earlier audit, not current availability.
 - Exact submission time and instructor delivery instructions remain unknown. No operational submission deadline/hour or delivery method is invented.
 - No external human usability session, instructor acceptance, deployment, other-OS/database support or 24-hour wall-clock expiry wait is claimed.
 - Normal frontend/backend previews may demonstrate technical behavior, but do not establish submission readiness. No deployment/submission was performed.
+
+## Supplied original materials re-review
+
+Owner supplied `codex-clipboard-3639f1c8-7eb5-4005-824a-35bb2ca6fba3.png` and explicitly described the conversation text as a manually copied, partial transcript. Engineer inspected the actual screenshot, copied it byte-for-byte, and saved ten alternating User/Assistant messages in [brainstorming-transcript.md](../brainstorming-transcript.md), preserving Russian wording, line order and literal table tabs. It begins with post-registration levels and ends with WeCode naming; no omitted dialogue was invented. This is not an automated export.
+
+The [screenshot comparison](../submission-checklist.md#actual-assignment-screenshot-comparison) resolves the prior rubric-access limit. Newly explicit checks include nontrivial/different-from-PartI (owner attestation, not invented independent artifact evidence), design-reference alternative, all-mvp closure, all-.md publication, ORM and exact iteration order, and actual observed-bug workflow. Screenshot asks for brainstorming chat history as .md; it does not prescribe automated export or expressly say full. Existing #4/#18 criteria do expressly require full history, so saving an excerpt cannot silently satisfy that stricter gate.
+
+Missing coverage: original beginning/ideation, alternative rejection/app selection/initial track discussion, individual/deadline/PartI exchange and original English-language decision; the summary's later agreement to document is also not in the excerpt. This describes absent coverage, not fabricated wording or exact missing turn counts. No new app/UI/storage/contract code was changed, so prior technical test evidence remains historical rather than falsely reported as rerun. Independent materials QA must review transcript fidelity, actual clauses and existing issue criteria before any closure; verdict is recorded in the follow-up handoff.
