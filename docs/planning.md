@@ -2,7 +2,7 @@
 
 Reviewed October 19, 2026 (Asia/Almaty). Delivery target is October 20, 2026; exact submission time is unknown. This checkout started empty with an unborn main branch. Existing remote main was fetched before editing; its specification and brainstorming summary were preserved. There were no existing AGENTS.md files or GitHub Issues at inspection. No application code or dependencies were added.
 
-## Decisions still needed
+## Original planning-stage decisions (historical)
 
 - Owner selection of stack and test/toolchain choices. Current proposal: React/TypeScript, Python/FastAPI, SQLAlchemy, SQLite. SQLite through an ORM is required by the assignment; specific frameworks remain proposed.
 - Owner selection of a coherent design reference/tool result, visual tokens, layout and accessibility baseline.
@@ -31,3 +31,7 @@ The referenced assignment screenshot and original conversation export are not pr
 Role documents are instructions for agents, not executable programs. Planning completion does not constitute implementation QA or close any newly created issue. The next step is PM refinement and owner selection of stack, design and product rules before frontend work is authorized.
 
 Publication verified: 19 open issues, each with Goal, Acceptance criteria, Out of scope and Constraints. All three requested labels exist. Decision entry points: [stack](https://github.com/240103097-jpg/WeCode/issues/1), [design](https://github.com/240103097-jpg/WeCode/issues/2), [product rules](https://github.com/240103097-jpg/WeCode/issues/3), and [original transcript](https://github.com/240103097-jpg/WeCode/issues/4). Consult GitHub for current status and dependencies; this is a publication record, not an active local backlog.
+
+## Frontend-stage update
+
+The owner has now selected React/TypeScript/Vite and later Python/FastAPI/SQLAlchemy/SQLite, delegated detailed dark yellow/green visual design, confirmed 9 units/27 exercises and completion with assisted work, and authorized explicit implementation defaults. See [current decisions](decisions.md) and [design references](design-system.md). Earlier unselected items above are historical, not current blockers. Genuine original transcript and exact submission time remain missing. No OpenAPI/backend/SQLite implementation is authorized in the frontend stage.
