@@ -1,6 +1,6 @@
 # Backend architecture
 
-The FastAPI server, extended with SQLAlchemy/SQLite persistence after stage-three independent QA, implements all 11 HTTP operations in [root OpenAPI](../openapi.yml). [The mapping](api-mapping.md) retains the frontend's service boundary and explains why real credential collection belongs to later frontend integration. [README](../README.md#sqlite-backend) has verified setup/run/test commands. The frontend still uses mockService; no frontend networking or UI changes are included. See [SQLite lifecycle](sqlite.md).
+The FastAPI server, extended with SQLAlchemy/SQLite persistence after stage-three independent QA, implements all 11 HTTP operations in [root OpenAPI](../openapi.yml). [The mapping](api-mapping.md) retains the frontend's service boundary and explains why real credential collection is implemented at the integration boundary. [README](../README.md#sqlite-backend) has verified setup/run/test commands. The default frontend now uses the real API service; explicit development mock mode remains separate. See [SQLite lifecycle](sqlite.md).
 
 ## Boundaries
 
@@ -20,7 +20,7 @@ No totals/XP counter is stored: frontend formulas derive completed units /9, eac
 
 ## Stage limits
 
-Tests and real process-restart checks establish SQLite backend behavior. A live frontend API client, UI credential changes and final integrated verification remain separately authorized later stages. Other databases have not been tested. The frontend still uses browser-local mock accounts with its public passphrase; they are not imported into real backend accounts. Restarting this temporary API does not touch browser storage.
+Tests and real process-restart checks establish SQLite backend behavior. The API client and credential UI are implemented in #17; final submission audit #18 remains separately authorized. Other databases have not been tested. Explicit development mock mode uses browser-local accounts with its public passphrase; they are not imported into real backend accounts. Restarting the API does not touch browser storage.
 
 Primary implementation references inspected: [FastAPI password authentication guidance](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/) and [argon2-cffi PasswordHasher API](https://argon2-cffi.readthedocs.io/en/stable/api.html). The selected contract uses opaque revocable sessions rather than the tutorial's JWT example.
 

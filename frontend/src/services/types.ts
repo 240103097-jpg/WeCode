@@ -13,7 +13,7 @@ export interface Snapshot { learner: Learner; units: Unit[]; progress: Record<st
 export interface Feedback { correct: boolean; text: string; assisted: boolean; }
 export interface LearningService {
  session(): Promise<Learner | null>;
- register(input: {name: string; email: string}): Promise<Learner>;
+ register(input: {name: string; email: string; password?: string}): Promise<Learner>;
  login(input: {email: string; passphrase: string}): Promise<Learner>;
  logout(): Promise<void>;
  snapshot(): Promise<Snapshot>;

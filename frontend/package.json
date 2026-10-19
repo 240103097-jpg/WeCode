@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "contrast": "node scripts/check-contrast.mjs"
+    "contrast": "node scripts/check-contrast.mjs",
+    "check:bundle": "node scripts/check-real-bundle.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

@@ -1,6 +1,6 @@
 # SQLite persistence lifecycle
 
-The owner authorizes persistence only. The frontend/mockService, root API contract and UI remain unchanged. Issue [#15](https://github.com/240103097-jpg/WeCode/issues/15) establishes accounts/preferences/sessions; dependent [#16](https://github.com/240103097-jpg/WeCode/issues/16) completes learning/curriculum persistence and selects it at runtime.
+This document records the completed persistence stage; integration #17 now connects the real frontend service while preserving design and product rules. Issue [#15](https://github.com/240103097-jpg/WeCode/issues/15) establishes accounts/preferences/sessions; dependent [#16](https://github.com/240103097-jpg/WeCode/issues/16) completes learning/curriculum persistence and selects it at runtime.
 
 ## Persisted entities
 
@@ -15,7 +15,8 @@ Python sqlite3 connection settings enable proper transactions, thread handoff an
 From the repository root, install pinned backend requirements as in [README](../README.md). Export DATABASE_URL from the secret-free [.env.example](../.env.example), or choose another SQLite file path with an existing parent directory:
 
 ```sh
-export DATABASE_URL=sqlite:////tmp/wecode.sqlite3
+mkdir -p data
+export DATABASE_URL="sqlite:///$PWD/data/wecode.sqlite3"
 /tmp/wecode-backend-venv/bin/python backend/scripts/init_db.py
 ```
 
@@ -35,7 +36,7 @@ Run the full backend suite against temporary SQLite and memory regression varian
 
 `backend/scripts/check_restart.py` starts three distinct real Uvicorn processes, stopping each fully and reusing one isolated DB. It creates accounts, updates profile/all track levels, reads a lesson, submits wrong/correct/retry answers, requests hints and reveals one solution. It saves the expected snapshot in process memory, restarts the backend, logs in again and checks the exact snapshot, live/revoked/expired sessions and another user's empty history. One test expiry timestamp is moved into the past via ORM while stopped; this does not claim a literal 24-hour elapsed wait. Repeated startup retains 9 units, 27 exercises and nine attempts. Credentials are never printed or written to files; the temporary DB is deleted after checks.
 
-No browser-local mock records are migrated or touched, and no real frontend networking/UI changes are made. Persistence and API tests do not claim final UI/API/database integration verification.
+No browser-local mock records are migrated or touched, and mock data is never automatically imported by integration. Persistence and API tests do not claim final UI/API/database integration verification.
 
 Primary references inspected: [SQLAlchemy Session transactions](https://docs.sqlalchemy.org/en/20/orm/session_basics.html) and [SQLite dialect/connection behavior](https://docs.sqlalchemy.org/en/20/dialects/sqlite.html). No API contract change is needed.
 

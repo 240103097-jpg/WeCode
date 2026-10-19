@@ -108,7 +108,7 @@ for method,(_,_,op) in operations.items():
     if fields:
         frontend={f['name'] for f in fields}
         api=set(op.get('requestBody',{}).get('content',{}).get('application/json',{}).get('schema',{}).get('properties',{}))|{p['name'] for p in op.get('parameters',[])}
-        if method=='register':assert api==frontend|{'password'}
+        if method=='register':assert api==frontend and next(f for f in fields if f['name']=='password')['optional']
         elif method=='login':assert api==(frontend-{'passphrase'})|{'password'}
         else:assert api==frontend,f'{method} input drift'
     security=op.get('security',doc['security'])
