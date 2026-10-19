@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-Interactive frontend with a centralized typed mockService. React, TypeScript and Vite are selected; Python/FastAPI, SQLAlchemy and SQLite are selected for later stages. The root OpenAPI contract defines the in-memory FastAPI backend, implemented in issues #12–14 with independent QA gates. The frontend still uses mockService; no real API client or database is implemented.
+Interactive frontend with a centralized typed mockService. React, TypeScript and Vite power the frontend; Python/FastAPI powers the independently verified in-memory backend. SQLAlchemy and SQLite remain selected for later persistence. The root OpenAPI contract defines the in-memory FastAPI backend, implemented in issues #12–14, all independently QA-passed and closed. The frontend still uses mockService; no real API client or database is implemented.
 
 ## Local development
 
@@ -65,6 +65,7 @@ All data operations go through [the typed service boundary](docs/mock-service.md
 - [Retro redesign verification](docs/qa/redesign.md)
 - [Independent API contract verification](docs/qa/api-contract.md)
 - [In-memory backend architecture](docs/backend.md)
+- [Independent in-memory backend QA](docs/qa/backend.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
 PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.

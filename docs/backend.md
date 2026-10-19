@@ -1,6 +1,6 @@
 # In-memory backend
 
-The stage-three FastAPI server implements all 11 HTTP operations in [root OpenAPI](../openapi.yml). [The mapping](api-mapping.md) retains the frontend's service boundary and explains why real credential collection belongs to later frontend integration. [README](../README.md#in-memory-backend) has verified setup/run/test commands. No frontend networking, UI, mockService, SQLAlchemy or SQLite changes are included.
+The independently QA-passed stage-three FastAPI server implements all 11 HTTP operations in [root OpenAPI](../openapi.yml). [The mapping](api-mapping.md) retains the frontend's service boundary and explains why real credential collection belongs to later frontend integration. [README](../README.md#in-memory-backend) has verified setup/run/test commands. No frontend networking, UI, mockService, SQLAlchemy or SQLite changes are included.
 
 ## Boundaries
 
@@ -23,3 +23,5 @@ No totals/XP counter is stored: frontend formulas derive completed units /9, eac
 Tests and real HTTP checks establish the in-memory server behavior. Restart persistence, distributed workers, a live frontend API client and UI credential changes remain separately authorized later stages. The frontend still uses browser-local mock accounts with its public passphrase; they are not imported into real backend accounts. Restarting this temporary API does not touch browser storage.
 
 Primary implementation references inspected: [FastAPI password authentication guidance](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/) and [argon2-cffi PasswordHasher API](https://argon2-cffi.readthedocs.io/en/stable/api.html). The selected contract uses opaque revocable sessions rather than the tutorial's JWT example.
+
+Actual criterion-by-criterion results are preserved in [independent backend QA evidence](qa/backend.md).
