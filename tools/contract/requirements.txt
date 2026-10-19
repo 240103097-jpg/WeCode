@@ -1,0 +1,4 @@
+# Contract-only validation tools, not backend application dependencies.
+openapi-spec-validator==0.7.2
+jsonschema[format]==4.26.0
+PyYAML==6.0.3

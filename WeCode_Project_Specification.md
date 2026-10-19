@@ -1,7 +1,7 @@
 # WeCode — Project Specification and Brainstorming Record
 
 Date: 19 October 2026. Submission target: 20 October 2026 (Asia/Almaty); exact submission time unknown.
-Status: frontend-stage specification. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. Backend behavior remains a later-stage requirement.
+Status: OpenAPI contract stage; the working frontend remains unchanged. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. Backend behavior remains a later-stage requirement.
 
 ## 1. Goal and audience
 
@@ -48,7 +48,7 @@ Proposed screens: sign up, sign in, track/level onboarding, dashboard, learning 
 
 ## 6. Technical approach and assignment process
 
-Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for later stages. Only the frontend with mockService is authorized in this stage. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
+Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for later stages. The frontend with mockService is implemented. This stage authorizes only root openapi.yml and contract documentation/validation; backend, SQLite and a real API client remain later work. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
 
 Follow the assignment's iteration order:
 1. Interactive frontend using mockService.

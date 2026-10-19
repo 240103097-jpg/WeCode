@@ -19,7 +19,7 @@ The `LearningService` interface in frontend/src/services/types.ts is the single 
 | solution | unit/exercise IDs | Explicit authored solution/explanation, recorded reveal |
 | simulateFailure | None | Mock-only next-call failure, not a future production endpoint |
 
-Failures are typed ServiceError codes: validation, duplicate, credentials, unauthorized, not-found, hint-locked, unavailable and storage. A later API design must decide endpoint shapes, pagination and actual session security; this document is not OpenAPI or backend implementation. The frontend's public fixed passphrase must never become production authentication.
+Failures are typed ServiceError codes: validation, duplicate, credentials, unauthorized, not-found, hint-locked, unavailable and storage. The contract-stage endpoint/security decisions and real-vs-mock differences are now recorded in docs/api-mapping.md and root openapi.yml. The mock remains unchanged; this document is not a backend implementation. The frontend's public fixed passphrase must never become production authentication.
 
 ## Record and checking semantics
 

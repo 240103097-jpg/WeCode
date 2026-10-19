@@ -2,7 +2,7 @@
 
 Read [the specification](WeCode_Project_Specification.md), [process](docs/process.md) and the current GitHub issue before working. Inspect the checkout, Git status, nested AGENTS.md files and remote state each session; never assume another session's files or commits exist. Preserve unrelated work. Never force-push or overwrite remote changes.
 
-Current stage: owner-authorized interactive frontend only. React, TypeScript and Vite are selected. Python/FastAPI, SQLAlchemy and SQLite are selected for later stages. Refine each issue as PM before implementation. Do not create openapi.yml, implement a backend or add SQLite yet. See docs/decisions.md for owner decisions and explicitly delegated defaults.
+Current stage: owner-authorized OpenAPI contract only (issue #11). React, TypeScript and Vite frontend remains unchanged. Python/FastAPI, SQLAlchemy and SQLite are selected for later stages. Refine each issue as PM before implementation. Create and validate root openapi.yml and its mapping/validation documentation; do not implement a backend, SQLite or real frontend API client. See docs/decisions.md for owner decisions and explicitly delegated defaults.
 
 Use [GitHub Issues](https://github.com/240103097-jpg/WeCode/issues) as the only active backlog. Read [task template](docs/task-template.md). Search all existing issues before creating tasks. Labels: `mvp`, `post-mvp`, `user-test-bug`; the last is only for observed defects.
 

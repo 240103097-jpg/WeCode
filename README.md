@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-Interactive frontend with a centralized typed mockService. React, TypeScript and Vite are selected; Python/FastAPI, SQLAlchemy and SQLite are selected for later stages. No backend, OpenAPI contract or database is implemented in this stage.
+Interactive frontend with a centralized typed mockService. React, TypeScript and Vite are selected; Python/FastAPI, SQLAlchemy and SQLite are selected for later stages. The root OpenAPI contract now describes the future backend; the frontend still uses mockService. No backend, real API client or database is implemented.
 
 ## Local development
 
@@ -32,6 +32,19 @@ pnpm typecheck
 pnpm test
 pnpm build
 ```
+
+## API contract validation
+
+The [API mapping](docs/api-mapping.md) covers all service methods and explicitly documents real authentication differences from mock accounts. To validate the root agreement (with Node on PATH):
+
+```sh
+python3 -m venv /tmp/wecode-openapi-venv
+/tmp/wecode-openapi-venv/bin/python -m pip install -r tools/contract/requirements.txt
+/tmp/wecode-openapi-venv/bin/openapi-spec-validator openapi.yml
+/tmp/wecode-openapi-venv/bin/python tools/contract/validate.py
+```
+
+Validation tooling is isolated from application/backend dependencies. The custom check also reads the existing frontend TypeScript AST, resolves references and checks examples/coverage. See the mapping for prerequisites and limitations.
 
 ## Demo accounts and learning data
 

@@ -1,0 +1,1779 @@
+# Versioned API agreement derived from the existing frontend; no implementation in this stage.
+openapi: 3.0.3
+info:
+  title: WeCode API contract
+  version: 1.0.0
+  description: 'Contract stage only: no backend, SQLite or real API client implemented. Derived from current
+    LearningService and its consumers. All account-owned data is selected exclusively from a validated
+    bearer credential; there is no client-supplied private user ID. Closed request schemas reject identity/correctness/progress
+    fields. Authored checking happens on the future server; no arbitrary code execution. English UI/content
+    and current completion/assistance rules are preserved. Real auth intentionally differs from public-passphrase
+    browser-local mock auth; see docs/api-mapping.md. HTTP validation/auth failures have no progress/attempt
+    side effects; writes must commit before success. Error responses never disclose tokens/passwords/keys/private
+    data. Production uses HTTPS; local server configuration is future work.'
+servers:
+- url: /api/v1
+  description: Relative API base; no server is started by this contract stage.
+security:
+- bearerAuth: []
+tags:
+- name: Authentication
+- name: Current learner
+- name: Learning workspace
+- name: Practice
+paths:
+  /auth/register:
+    post:
+      operationId: register
+      summary: Register and start a real session
+      description: 'Requires a private password in addition to mock name/email. Normalize name/email and
+        enforce case-insensitive email uniqueness; never accept the fixed public demo passphrase as a
+        special credential. New learner: Python active, every level Beginner, onboarded=false. Persist
+        an adaptive password hash only, issue a revocable opaque token; passwords never appear in output.
+        No email verification/reset added.'
+      tags:
+      - Authentication
+      x-frontend-service: register
+      responses:
+        '201':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSession'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMedia'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '409':
+          $ref: '#/components/responses/Duplicate'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+  /auth/login:
+    post:
+      operationId: login
+      summary: Sign in with a real password
+      description: Normalize email only; verify the private password hash and issue a new opaque session.
+        Same generic credentials error for unknown email and wrong password; no account enumeration in
+        this response. Other existing sessions remain until expiry/logout. No public demo password in
+        production auth.
+      tags:
+      - Authentication
+      x-frontend-service: login
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSession'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMedia'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '401':
+          $ref: '#/components/responses/Credentials'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+  /auth/session:
+    delete:
+      operationId: logout
+      summary: Revoke the current session
+      description: Resolve current account/session from bearer token and revoke that token before 204.
+        Do not delete learner data, revoke unrelated sessions, or accept a user ID. A later repeat after
+        revocation returns 401; future client treats 401 during logout as locally signed out.
+      tags:
+      - Authentication
+      x-frontend-service: logout
+      responses:
+        '204':
+          description: Success; no response body.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+  /me:
+    get:
+      operationId: session
+      summary: Read the authenticated current learner
+      description: Valid token returns Learner. Missing/invalid/expired/revoked credential returns 401,
+        never another learner. Future session() adapter maps 401 to null and clears its session credential;
+        all other operations surface 401 as sign-in required. No anonymous learner/null JSON response.
+      tags:
+      - Current learner
+      x-frontend-service: session
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Learner'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+    patch:
+      operationId: profile
+      summary: Update only the current display name
+      description: Trim name, validate normalized length 2–60 and keep email/identity/preferences/history
+        unchanged. Future frontend refreshes snapshot after 204. No client userId; unknown fields including
+        id/email/progress are rejected. Repeating the same name is idempotent.
+      tags:
+      - Current learner
+      x-frontend-service: profile
+      responses:
+        '204':
+          description: Success; no response body.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMedia'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+  /me/preferences:
+    patch:
+      operationId: preferences
+      summary: Set active track and that track level
+      description: Update activeTrack and only levels[track]. Preserve every other track level and all
+        prior lesson/exercise/attempt history. onboarded=true is monotonic; false/omitted does not reset
+        it. No locks are created by level choice. Repeating identical input is idempotent.
+      tags:
+      - Current learner
+      x-frontend-service: preferences
+      responses:
+        '204':
+          description: Success; no response body.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMedia'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreferencesInput'
+  /me/snapshot:
+    get:
+      operationId: snapshot
+      summary: Read curriculum and private learning state
+      description: 'Current frontend aggregate read: current learner, all nine units/lessons/27 public
+        exercise prompts, current-user progress and entire attempt history. No filtering query is needed
+        by current consumers. Return a coherent snapshot after committed writes. Do not include answer
+        keys, accepted/rejected variants, hints, solutions or hidden solution explanations in units. Own
+        submitted answers/feedback in attempts are intentional user history, not a key export. UI computes
+        overall completed/9, per-track completed/3, independent exercises/27 and current unit steps/4.
+        Unit is complete iff read and all three correct flags; retries cannot add duplicate completion
+        credit. No XP/scoring.'
+      tags:
+      - Learning workspace
+      x-frontend-service: snapshot
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+  /me/units/{unitId}/lesson-read:
+    put:
+      operationId: markRead
+      summary: Mark a lesson read
+      description: Idempotently set read=true for authenticated learner and this unit. Repeats never create
+        another completion credit. Lesson read alone is not unit completion. Unit must exist; no level
+        prerequisite or unread/reset operation.
+      tags:
+      - Learning workspace
+      x-frontend-service: markRead
+      responses:
+        '204':
+          description: Success; no response body.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMedia'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonReadInput'
+      parameters:
+      - $ref: '#/components/parameters/UnitId'
+  /me/units/{unitId}/exercises/{exerciseId}/submissions:
+    post:
+      operationId: submit
+      summary: Check and save one authored-rule attempt
+      description: The future server normalizes CRLF to LF then trims surrounding whitespace, checks authored
+        accepted variants and atomically saves an attempt plus progress flags. Never execute learner code
+        or trust client correctness/assistance/user identity. Quiz accepts a stable option ID; an unknown
+        nonblank option ID is a normal incorrect attempt. Wrong answer is HTTP 201 with correct=false
+        and explanatory feedback, and can be retried without limit. Invalid/blank/oversize input is 422
+        and records no attempt. No generic case/internal-space/semantic-equivalence normalization. Each
+        POST is a new saved attempt, including transport retries; all flags and completion are Boolean
+        historical facts so repeat requests never duplicate completion credit. correct=true sets correct-ever;
+        independent-ever becomes true only if no prior solution reveal. Later wrong answers cannot clear
+        either. assisted is revealed at checking time. A later reveal never erases an earlier independent
+        solve. Concurrent submit/reveal/read writes are serialized atomically per learner so observed
+        assistance and snapshot are consistent.
+      tags:
+      - Practice
+      x-frontend-service: submit
+      responses:
+        '201':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '415':
+          $ref: '#/components/responses/UnsupportedMedia'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionInput'
+      parameters:
+      - $ref: '#/components/parameters/UnitId'
+      - $ref: '#/components/parameters/ExerciseId'
+  /me/units/{unitId}/exercises/{exerciseId}/hints:
+    post:
+      operationId: hint
+      summary: Request the authored hint after a wrong attempt
+      description: Requires any earlier incorrect attempt by this same authenticated learner on this exact
+        exercise, even if later correct. Otherwise 409 hint-locked, with no progress mutation. On success
+        atomically increment hintCount and return a JSON string. Repeats count as new hint requests but
+        do not affect credit or solution-assisted flags. No request body, no userId.
+      tags:
+      - Practice
+      x-frontend-service: hint
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hint'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/HintLocked'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      parameters:
+      - $ref: '#/components/parameters/UnitId'
+      - $ref: '#/components/parameters/ExerciseId'
+  /me/units/{unitId}/exercises/{exerciseId}/solution-reveal:
+    put:
+      operationId: solution
+      summary: Explicitly reveal and record the authored solution
+      description: Idempotently persist revealed=true before returning canonical answer and explanation.
+        Available separately from submit/hint, without requiring a wrong attempt. Reveal alone is not
+        correct/completed; a later correct submission can complete assisted work but cannot create a new
+        independent solve. Preserve any independent solve that happened before this reveal. Only this
+        explicit operation returns solution metadata; later ordinary curriculum remains unrevealed. No
+        request body; repeated reveal does not add completion credit.
+      tags:
+      - Practice
+      x-frontend-service: solution
+      responses:
+        '200':
+          description: Success.
+          headers:
+            Cache-Control:
+              description: Private credentials/data and errors must not be cached.
+              schema:
+                type: string
+                enum:
+                - no-store
+              example: no-store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Solution'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/Validation'
+        '500':
+          $ref: '#/components/responses/Internal'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+      parameters:
+      - $ref: '#/components/parameters/UnitId'
+      - $ref: '#/components/parameters/ExerciseId'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque session token
+      description: 'Authorization: Bearer <opaque-token>. At least 256 bits of cryptographic randomness;
+        24-hour expiry, immediate revocation by logout. Server resolves current account from session registry/token
+        verification; never from request userId or learner.id. Use HTTPS outside local development; do
+        not log credentials. Missing, malformed, expired, unknown or revoked tokens yield 401. No roles/admin/refresh
+        introduced.'
+  parameters:
+    UnitId:
+      name: unitId
+      in: path
+      required: true
+      description: Stable authored unit ID.
+      schema:
+        $ref: '#/components/schemas/Identifier'
+      example: python-beginner
+    ExerciseId:
+      name: exerciseId
+      in: path
+      required: true
+      description: Stable authored exercise ID, required to belong to unitId; mismatches are 404.
+      schema:
+        $ref: '#/components/schemas/Identifier'
+      example: python-beginner-bug
+  schemas:
+    Track:
+      type: string
+      enum:
+      - Python
+      - SQL
+      - Git
+      example: Python
+    Level:
+      type: string
+      enum:
+      - Beginner
+      - Intermediate
+      - Advanced
+      example: Beginner
+    Identifier:
+      type: string
+      minLength: 1
+      maxLength: 100
+      pattern: ^[a-z][a-z0-9-]*$
+      example: python-beginner
+    NameInput:
+      type: string
+      minLength: 2
+      maxLength: 60
+      pattern: \S
+      description: Trim surrounding whitespace before validation. Normalized display name is 2–60 characters.
+        Future adapter trims before sending.
+      example: Demo Learner
+    EmailInput:
+      type: string
+      format: email
+      minLength: 3
+      maxLength: 254
+      pattern: ^[^\s@]+@[^\s@]+\.[^\s@]+$
+      description: Future adapter trims and lowercases before sending. Server also trims/lowercases for
+        uniqueness and credential lookup.
+      example: learner@example.test
+    PasswordInput:
+      type: string
+      minLength: 12
+      maxLength: 128
+      writeOnly: true
+      description: Real private password, never the mock public passphrase. Do not trim, log, return or
+        persist in plaintext; future server uses an adaptive password hash. This input is a contract-stage
+        protocol default, not implemented frontend behavior.
+      example: example-only-secret-password
+    RegisterInput:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - email
+      - password
+      properties:
+        name:
+          $ref: '#/components/schemas/NameInput'
+        email:
+          $ref: '#/components/schemas/EmailInput'
+        password:
+          $ref: '#/components/schemas/PasswordInput'
+      example:
+        name: Demo Learner
+        email: learner@example.test
+        password: example-only-secret-password
+    LoginInput:
+      type: object
+      additionalProperties: false
+      required:
+      - email
+      - password
+      properties:
+        email:
+          $ref: '#/components/schemas/EmailInput'
+        password:
+          $ref: '#/components/schemas/PasswordInput'
+      example:
+        email: learner@example.test
+        password: example-only-secret-password
+    TrackLevels:
+      type: object
+      additionalProperties: false
+      required:
+      - Python
+      - SQL
+      - Git
+      properties:
+        Python:
+          $ref: '#/components/schemas/Level'
+        SQL:
+          $ref: '#/components/schemas/Level'
+        Git:
+          $ref: '#/components/schemas/Level'
+      example:
+        Python: Beginner
+        SQL: Beginner
+        Git: Beginner
+    Learner:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - name
+      - email
+      - activeTrack
+      - levels
+      - onboarded
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/NameInput'
+        email:
+          $ref: '#/components/schemas/EmailInput'
+        activeTrack:
+          $ref: '#/components/schemas/Track'
+        levels:
+          $ref: '#/components/schemas/TrackLevels'
+        onboarded:
+          type: boolean
+      description: Response-only identity from the authenticated account. New accounts start at Beginner
+        in every track, active Python, onboarded false. Never accept this object as an update request.
+      example:
+        id: cd5dfdb5-c7b8-4a2d-9b50-c9e61dd603a7
+        name: Demo Learner
+        email: learner@example.test
+        activeTrack: Python
+        levels:
+          Python: Beginner
+          SQL: Beginner
+          Git: Beginner
+        onboarded: true
+    AuthSession:
+      type: object
+      additionalProperties: false
+      required:
+      - learner
+      - accessToken
+      - tokenType
+      - expiresAt
+      properties:
+        learner:
+          $ref: '#/components/schemas/Learner'
+        accessToken:
+          type: string
+          minLength: 32
+          description: Opaque, cryptographically random bearer credential; example is deliberately nonfunctional.
+        tokenType:
+          type: string
+          enum:
+          - Bearer
+        expiresAt:
+          type: string
+          format: date-time
+      description: Registration and login establish a new session. Token expires 24 hours after issuance
+        and is immediately revocable by logout. No refresh endpoint in MVP. No password in response.
+      example:
+        learner:
+          id: cd5dfdb5-c7b8-4a2d-9b50-c9e61dd603a7
+          name: Demo Learner
+          email: learner@example.test
+          activeTrack: Python
+          levels:
+            Python: Beginner
+            SQL: Beginner
+            Git: Beginner
+          onboarded: false
+        accessToken: example-nonfunctional-opaque-token-not-a-credential
+        tokenType: Bearer
+        expiresAt: '2026-10-20T11:00:00Z'
+    PreferencesInput:
+      type: object
+      additionalProperties: false
+      required:
+      - track
+      - level
+      properties:
+        track:
+          $ref: '#/components/schemas/Track'
+        level:
+          $ref: '#/components/schemas/Level'
+        onboarded:
+          type: boolean
+          default: false
+          description: True permanently marks onboarding complete; false/omitted leaves the current flag
+            unchanged, matching mockService.
+      description: Sets activeTrack and only that track level. Other track levels, all unit history and
+        attempts are preserved.
+      example:
+        track: SQL
+        level: Intermediate
+        onboarded: true
+    ProfileInput:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      properties:
+        name:
+          $ref: '#/components/schemas/NameInput'
+      description: Email, identity, levels and progress cannot be edited here.
+      example:
+        name: New Display Name
+    LessonReadInput:
+      type: object
+      additionalProperties: false
+      required:
+      - read
+      properties:
+        read:
+          type: boolean
+          enum:
+          - true
+      description: Only the read=true transition exists; repeated PUT is idempotent. Cannot un-read or
+        erase history.
+      example:
+        read: true
+    SubmissionInput:
+      type: object
+      additionalProperties: false
+      required:
+      - answer
+      properties:
+        answer:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: \S
+          description: A quiz option ID or authored text fragment. Future adapter normalizes CRLF to LF
+            and trims surrounding whitespace before sending; server repeats this normalization and rejects
+            blank or normalized length outside 1–4000. Wire payload is capped at 4000 characters. No other
+            whitespace/case/punctuation normalization or code execution.
+          example: int(age) + 1
+      example:
+        answer: int(age) + 1
+    QuizOption:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - text
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 100
+        text:
+          type: string
+          minLength: 1
+      example:
+        id: a
+        text: '5'
+    QuizExercise:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - type
+      - prompt
+      - options
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          type: string
+          enum:
+          - Quiz
+        prompt:
+          type: string
+          minLength: 1
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizOption'
+          minItems: 2
+      description: Public exercise fields only. Exactly one authored option is correct, but no field identifies
+        it. Stable unique option IDs are used for submissions.
+      example:
+        id: python-beginner-quiz
+        type: Quiz
+        prompt: What is printed by print(2 + 3)?
+        options:
+        - id: a
+          text: '5'
+        - id: b
+          text: '23'
+        - id: c
+          text: 2 + 3
+    TextExercise:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - type
+      - prompt
+      - code
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          type: string
+          enum:
+          - Fix the Bug
+          - Complete the Code
+        prompt:
+          type: string
+          minLength: 1
+        code:
+          type: string
+          minLength: 1
+      description: Public prompt and starting fragment only. Keys, accepted/rejected variants, hints and
+        solution explanations are not curriculum fields.
+      example:
+        id: python-beginner-bug
+        type: Fix the Bug
+        prompt: Replace only the faulty right-hand expression so the result is the number 8.
+        code: 'age = "7"
+
+          next_age = age + 1'
+    Exercise:
+      oneOf:
+      - $ref: '#/components/schemas/QuizExercise'
+      - $ref: '#/components/schemas/TextExercise'
+      description: A discriminated exercise union with closed object variants; no answer-key or unrevealed
+        solution metadata.
+    Unit:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - track
+      - level
+      - title
+      - summary
+      - lesson
+      - example
+      - takeaway
+      - exercises
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        track:
+          $ref: '#/components/schemas/Track'
+        level:
+          $ref: '#/components/schemas/Level'
+        title:
+          type: string
+          minLength: 1
+        summary:
+          type: string
+          minLength: 1
+        lesson:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 1
+        example:
+          type: string
+          minLength: 1
+          description: Instructional lesson example, not an answer key.
+        takeaway:
+          type: string
+          minLength: 1
+        exercises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exercise'
+          minItems: 3
+          maxItems: 3
+      description: One lesson and exactly one Quiz, Fix the Bug and Complete the Code. All English. Server-authored
+        content; no write endpoint. Current inventory has one unit for each of the nine track/level pairs.
+      example:
+        track: Python
+        level: Beginner
+        title: Values, names & first steps
+        summary: Store values, work with numbers, and make your first output.
+        lesson:
+        - A variable name refers to a value. In Python, = assigns a value and == compares two values.
+          Strings use quotes; integers such as 3 do not. print() displays a value.
+        - input() returns a string, even when the learner types digits. Use int() to convert a string
+          containing an integer before doing arithmetic. An invalid integer string raises ValueError;
+          our exercises use valid numeric strings.
+        example: 'name = "Ada"
+
+          lessons = 3
+
+          print(name)
+
+          print(lessons + 1)  # 4'
+        takeaway: Convert numeric text before arithmetic; assignment and comparison are different operations.
+        id: python-beginner
+        exercises:
+        - id: python-beginner-quiz
+          type: Quiz
+          prompt: What is printed by print(2 + 3)?
+          options:
+          - id: a
+            text: '5'
+          - id: b
+            text: '23'
+          - id: c
+            text: 2 + 3
+        - id: python-beginner-bug
+          type: Fix the Bug
+          prompt: Replace only the faulty right-hand expression so the result is the number 8.
+          code: 'age = "7"
+
+            next_age = age + 1'
+        - id: python-beginner-fill
+          type: Complete the Code
+          prompt: Fill only the missing function name to display the message.
+          code: ____("Hello, WeCode!")
+    ExerciseProgress:
+      type: object
+      additionalProperties: false
+      required:
+      - correct
+      - independent
+      - revealed
+      - hintCount
+      properties:
+        correct:
+          type: boolean
+          description: Ever answered correctly; later wrong answers cannot clear it.
+        independent:
+          type: boolean
+          description: Ever correct before any solution reveal. May remain true after a later reveal;
+            must imply correct=true.
+        revealed:
+          type: boolean
+          description: Ever explicitly viewed the solution; monotonic false to true.
+        hintCount:
+          type: integer
+          minimum: 0
+          description: Successful hint requests, not independent/assisted scoring.
+      description: Server-owned historical flags. Client cannot set them. Correct after a prior reveal
+        sets correct but not independent; a reveal alone never sets correct.
+      example:
+        correct: true
+        independent: false
+        revealed: true
+        hintCount: 1
+      not:
+        required:
+        - correct
+        - independent
+        properties:
+          correct:
+            enum:
+            - false
+          independent:
+            enum:
+            - true
+    UnitProgress:
+      type: object
+      additionalProperties: false
+      required:
+      - read
+      - exercises
+      properties:
+        read:
+          type: boolean
+        exercises:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ExerciseProgress'
+          description: Map keyed by exercise IDs belonging to this unit. Missing exercise means all default
+            flags false and hintCount zero.
+      description: Missing unit map entry means read=false and no exercise state. Complete iff read=true
+        and all three exercises have correct=true; assistance does not block completion.
+      example:
+        read: true
+        exercises:
+          python-beginner-quiz:
+            correct: true
+            independent: true
+            revealed: false
+            hintCount: 0
+          python-beginner-bug:
+            correct: true
+            independent: false
+            revealed: true
+            hintCount: 1
+          python-beginner-fill:
+            correct: true
+            independent: true
+            revealed: false
+            hintCount: 0
+    ProgressMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/UnitProgress'
+      description: Map keyed by known unit IDs. Empty map is valid for a new learner; maps never contain
+        another account’s records.
+      example:
+        python-beginner:
+          read: true
+          exercises:
+            python-beginner-quiz:
+              correct: true
+              independent: true
+              revealed: false
+              hintCount: 0
+            python-beginner-bug:
+              correct: true
+              independent: false
+              revealed: true
+              hintCount: 1
+            python-beginner-fill:
+              correct: true
+              independent: true
+              revealed: false
+              hintCount: 0
+    Attempt:
+      type: object
+      additionalProperties: false
+      required:
+      - id
+      - exerciseId
+      - answer
+      - correct
+      - assisted
+      - createdAt
+      - feedback
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        exerciseId:
+          $ref: '#/components/schemas/Identifier'
+        answer:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: \S
+        correct:
+          type: boolean
+        assisted:
+          type: boolean
+          description: Whether solution was already revealed when this attempt was checked.
+        createdAt:
+          type: string
+          format: date-time
+          description: Server-generated RFC3339 timestamp with offset, serialized as UTC. UI formats Asia/Almaty.
+        feedback:
+          type: string
+          minLength: 1
+      description: An actual saved submission, including wrong answers. Only current learner history.
+        answer is the learner’s normalized submission, not a server answer key.
+      example:
+        id: 00000000-0000-4000-8000-000000000003
+        exerciseId: python-beginner-bug
+        answer: int(age) + 1
+        correct: true
+        assisted: true
+        createdAt: '2026-10-19T11:02:00Z'
+        feedback: int() converts "7" to 7 before adding 1.
+    Feedback:
+      type: object
+      additionalProperties: false
+      required:
+      - correct
+      - text
+      - assisted
+      properties:
+        correct:
+          type: boolean
+        text:
+          type: string
+          minLength: 1
+        assisted:
+          type: boolean
+      description: Server-authored explanatory feedback. Incorrect is a normal successful submission result,
+        not HTTP 422. assisted reflects solution state at this submission time.
+      example:
+        correct: true
+        text: int() converts "7" to 7 before adding 1.
+        assisted: true
+    Hint:
+      type: string
+      minLength: 1
+      description: JSON string matching LearningService.hint return shape. Only available after an earlier
+        wrong submission to this exercise by this learner.
+      example: Use int(age), then add one.
+    Solution:
+      type: object
+      additionalProperties: false
+      required:
+      - answer
+      - explanation
+      properties:
+        answer:
+          type: string
+          minLength: 1
+          description: Canonical accepted fragment or quiz option ID, revealed only by explicit solution
+            action.
+        explanation:
+          type: string
+          minLength: 1
+      description: Only this explicit reveal response exposes authored solution metadata. Store revealed=true
+        before responding; does not submit or complete the exercise.
+      example:
+        answer: int(age) + 1
+        explanation: int() converts "7" to 7 before adding 1.
+    Snapshot:
+      type: object
+      additionalProperties: false
+      required:
+      - learner
+      - units
+      - progress
+      - attempts
+      properties:
+        learner:
+          $ref: '#/components/schemas/Learner'
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/Unit'
+          minItems: 9
+          maxItems: 9
+        progress:
+          $ref: '#/components/schemas/ProgressMap'
+        attempts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attempt'
+      description: Coherent current-user snapshot. All nine units and all current-user attempts in oldest-first
+        commit order (stable even when timestamps tie); UI slices latest ten and uses full length. No
+        silent pagination/truncation. Progress and history survive track/level edits. No solution/key/hint
+        metadata in units. Aggregate reads replace unused standalone curriculum/progress endpoints.
+      example:
+        learner:
+          id: cd5dfdb5-c7b8-4a2d-9b50-c9e61dd603a7
+          name: Demo Learner
+          email: learner@example.test
+          activeTrack: Python
+          levels:
+            Python: Beginner
+            SQL: Beginner
+            Git: Beginner
+          onboarded: true
+        units:
+        - track: Python
+          level: Beginner
+          title: Values, names & first steps
+          summary: Store values, work with numbers, and make your first output.
+          lesson:
+          - A variable name refers to a value. In Python, = assigns a value and == compares two values.
+            Strings use quotes; integers such as 3 do not. print() displays a value.
+          - input() returns a string, even when the learner types digits. Use int() to convert a string
+            containing an integer before doing arithmetic. An invalid integer string raises ValueError;
+            our exercises use valid numeric strings.
+          example: 'name = "Ada"
+
+            lessons = 3
+
+            print(name)
+
+            print(lessons + 1)  # 4'
+          takeaway: Convert numeric text before arithmetic; assignment and comparison are different operations.
+          id: python-beginner
+          exercises:
+          - id: python-beginner-quiz
+            type: Quiz
+            prompt: What is printed by print(2 + 3)?
+            options:
+            - id: a
+              text: '5'
+            - id: b
+              text: '23'
+            - id: c
+              text: 2 + 3
+          - id: python-beginner-bug
+            type: Fix the Bug
+            prompt: Replace only the faulty right-hand expression so the result is the number 8.
+            code: 'age = "7"
+
+              next_age = age + 1'
+          - id: python-beginner-fill
+            type: Complete the Code
+            prompt: Fill only the missing function name to display the message.
+            code: ____("Hello, WeCode!")
+        - track: Python
+          level: Intermediate
+          title: Transform data with comprehensions
+          summary: Filter a sequence and build a result without mutating your input.
+          lesson:
+          - 'A list comprehension creates a new list from an iterable: [expression for item in iterable
+            if condition]. The if clause filters input items; the expression transforms the items that
+            remain. The original list is not modified by the comprehension.'
+          - Functions return results with return. A function that only prints its result returns None
+            implicitly. Keep transformation and display separate so callers can reuse the data.
+          example: "def doubled_evens(numbers):\n    return [n * 2 for n in numbers if n % 2 == 0]\n\n\
+            print(doubled_evens([1, 2, 3, 4]))  # [4, 8]"
+          takeaway: The filter chooses items; the leading expression transforms them. Return data to the
+            caller.
+          id: python-intermediate
+          exercises:
+          - id: python-intermediate-quiz
+            type: Quiz
+            prompt: What does [n * 2 for n in [1, 2, 3] if n > 1] produce?
+            options:
+            - id: a
+              text: '[2, 4, 6]'
+            - id: b
+              text: '[4, 6]'
+            - id: c
+              text: '[2, 3]'
+          - id: python-intermediate-bug
+            type: Fix the Bug
+            prompt: Replace only the final line so this function returns its list to the caller. Use the
+              shown variable name.
+            code: "def positives(numbers):\n    result = [n for n in numbers if n > 0]\n    print(result)"
+          - id: python-intermediate-fill
+            type: Complete the Code
+            prompt: Fill only the filter condition to keep even integers. Use n % 2 and ==.
+            code: evens = [n for n in numbers if ____]
+        - track: Python
+          level: Advanced
+          title: Lazy iteration with generators
+          summary: Yield values on demand and reason about consumed iterators.
+          lesson:
+          - 'A function containing yield produces a generator iterator when called. It runs lazily: each
+            next() resumes it until the next yield. Its local state is preserved between yields; return
+            ends the generator.'
+          - A generator iterator is consumed as you advance it. It does not start over when reused. A
+            generator expression also creates values lazily, while a list comprehension builds a whole
+            list immediately. Laziness can reduce memory for large streams.
+          example: "def squares(limit):\n    for n in range(limit):\n        yield n * n\n\nstream = squares(3)\n\
+            print(next(stream))  # 0\nprint(list(stream))  # [1, 4]"
+          takeaway: yield suspends execution with state intact; an exhausted iterator does not restart
+            itself.
+          id: python-advanced
+          exercises:
+          - id: python-advanced-quiz
+            type: Quiz
+            prompt: After g = (n for n in range(3)); next(g), what does list(g) return?
+            options:
+            - id: a
+              text: '[0, 1, 2]'
+            - id: b
+              text: '[]'
+            - id: c
+              text: '[1, 2]'
+          - id: python-advanced-bug
+            type: Fix the Bug
+            prompt: Replace only return n with a line that emits every n lazily from this function.
+            code: "def count_to(limit):\n    for n in range(limit):\n        return n"
+          - id: python-advanced-fill
+            type: Complete the Code
+            prompt: Fill only the expression that requests the next item from stream. Use the built-in
+              next function.
+            code: 'stream = (n * n for n in range(4))
+
+              first = ____'
+        - track: SQL
+          level: Beginner
+          title: Ask your first data question
+          summary: Select columns and filter rows with a clear SQL query.
+          lesson:
+          - SELECT chooses the columns to return and FROM names the source table. WHERE filters individual
+            rows before they reach the result. Text literals use single quotes. Numeric literals such
+            as 18 do not need quotes.
+          - In this unit, learners(id, name, age) contains one row per learner. Use >= for an inclusive
+            lower bound. ORDER BY sorts the result; without it, do not rely on a particular row order.
+            These exercises use SQL compatible with SQLite.
+          example: 'SELECT name
+
+            FROM learners
+
+            WHERE age >= 18
+
+            ORDER BY name;'
+          takeaway: SELECT picks columns; WHERE picks rows. Use ORDER BY when order matters.
+          id: sql-beginner
+          exercises:
+          - id: sql-beginner-quiz
+            type: Quiz
+            prompt: Which clause filters individual rows?
+            options:
+            - id: a
+              text: WHERE
+            - id: b
+              text: ORDER BY
+            - id: c
+              text: SELECT
+          - id: sql-beginner-bug
+            type: Fix the Bug
+            prompt: Replace only the comparison to include learners aged 18 and older. Keep the column
+              on the left.
+            code: SELECT name FROM learners WHERE age > 18;
+          - id: sql-beginner-fill
+            type: Complete the Code
+            prompt: Fill only the column name to return learner names.
+            code: SELECT ____ FROM learners;
+        - track: SQL
+          level: Intermediate
+          title: Summarize rows into groups
+          summary: Aggregate data and filter the resulting groups.
+          lesson:
+          - GROUP BY combines rows with equal grouping values. Aggregate functions such as COUNT(*) and
+            SUM(amount) compute one result per group. In orders(id, customer_id, amount), grouping by
+            customer_id lets us summarize each customer.
+          - WHERE filters rows before grouping. HAVING filters groups after aggregation. COUNT(*) counts
+            rows, including rows whose individual columns contain NULL. COUNT(column) counts only rows
+            where that column is not NULL.
+          example: 'SELECT customer_id, COUNT(*) AS order_count
+
+            FROM orders
+
+            GROUP BY customer_id
+
+            HAVING COUNT(*) >= 2;'
+          takeaway: Use WHERE for input rows and HAVING for aggregate conditions.
+          id: sql-intermediate
+          exercises:
+          - id: sql-intermediate-quiz
+            type: Quiz
+            prompt: Which clause keeps only groups where COUNT(*) is at least 2?
+            options:
+            - id: a
+              text: WHERE COUNT(*) >= 2
+            - id: b
+              text: HAVING COUNT(*) >= 2
+            - id: c
+              text: ORDER BY COUNT(*) >= 2
+          - id: sql-intermediate-bug
+            type: Fix the Bug
+            prompt: Replace only WHERE with the correct keyword in this grouped query.
+            code: 'SELECT customer_id, SUM(amount)
+
+              FROM orders
+
+              GROUP BY customer_id
+
+              WHERE SUM(amount) > 100;'
+          - id: sql-intermediate-fill
+            type: Complete the Code
+            prompt: Fill only the aggregate expression to count every order row, including rows with a
+              NULL amount.
+            code: 'SELECT customer_id, ____ AS orders_count
+
+              FROM orders GROUP BY customer_id;'
+        - track: SQL
+          level: Advanced
+          title: Keep the rows. Add the insight.
+          summary: Use window functions for ranking and running totals.
+          lesson:
+          - Window functions calculate across related rows while keeping each input row. OVER defines
+            the window. PARTITION BY separates independent groups and ORDER BY defines order inside each
+            partition. GROUP BY, in contrast, collapses rows into groups.
+          - For sales(id, team, amount), a running total can use SUM(amount) OVER (PARTITION BY team ORDER
+            BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW). Assume id is unique. ROW_NUMBER assigns
+            a unique position; include a unique tie-breaker in ORDER BY for deterministic numbering.
+          example: "SELECT id, team, amount,\n  SUM(amount) OVER (\n    PARTITION BY team ORDER BY id\n\
+            \    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n  ) AS running_total\nFROM sales;"
+          takeaway: A window adds a calculation to each row; partition and ordering define which rows
+            contribute.
+          id: sql-advanced
+          exercises:
+          - id: sql-advanced-quiz
+            type: Quiz
+            prompt: What does PARTITION BY team do inside OVER?
+            options:
+            - id: a
+              text: Collapses sales to one row per team
+            - id: b
+              text: Sorts the entire final output
+            - id: c
+              text: Restarts the window calculation for each team
+          - id: sql-advanced-bug
+            type: Fix the Bug
+            prompt: Replace only ORDER BY amount DESC with a deterministic ordering. id is unique; break
+              equal amounts by ascending id.
+            code: ROW_NUMBER() OVER (ORDER BY amount DESC)
+          - id: sql-advanced-fill
+            type: Complete the Code
+            prompt: Fill only the frame start so the running total includes every earlier row in its partition.
+            code: ROWS BETWEEN ____ AND CURRENT ROW
+        - track: Git
+          level: Beginner
+          title: From working file to commit
+          summary: Understand the working tree, staging area and commit history.
+          lesson:
+          - Git tracks snapshots. Your working tree contains editable files; the staging area (index)
+            contains the next proposed snapshot. git add copies the current version of a file into the
+            staging area. Later edits need to be staged again.
+          - git status shows staged and unstaged changes. git commit records the staged snapshot, not
+            every working file. A commit is local; it is not automatically uploaded to a remote. Use small,
+            descriptive commits. These are learning examples, not commands executed by WeCode.
+          example: 'git status
+
+            git add notes.py
+
+            git commit -m "Add learning notes"'
+          takeaway: Stage the intended file version before committing; local commits and remote publishing
+            are separate.
+          id: git-beginner
+          exercises:
+          - id: git-beginner-quiz
+            type: Quiz
+            prompt: Which command stages the current version of notes.py?
+            options:
+            - id: a
+              text: git add notes.py
+            - id: b
+              text: git commit notes.py
+            - id: c
+              text: git push notes.py
+          - id: git-beginner-bug
+            type: Fix the Bug
+            prompt: Replace the entire command to stage notes.py instead of trying to publish it.
+            code: git push notes.py
+          - id: git-beginner-fill
+            type: Complete the Code
+            prompt: Fill only the subcommand to record the already-staged snapshot with this message.
+            code: git ____ -m "Add notes"
+        - track: Git
+          level: Intermediate
+          title: Work safely across branches
+          summary: Create an isolated branch and merge it into the intended target.
+          lesson:
+          - A branch names a line of development. git switch -c feature/notes creates a branch from the
+            current commit and switches to it. New commits advance the branch you have checked out. Check
+            git status before switching, because uncommitted changes can block or complicate a switch.
+          - To bring feature/notes into main, switch to main first, then run git merge feature/notes.
+            If conflicts occur, inspect and edit the conflicted files, stage the resolved versions, and
+            complete the merge. A conflict needs human judgment, not blindly accepting one side.
+          example: 'git switch -c feature/notes
+
+            # Edit, stage and commit your change
+
+            git switch main
+
+            git merge feature/notes'
+          takeaway: The current branch is the merge destination; the merge argument is the source branch.
+          id: git-intermediate
+          exercises:
+          - id: git-intermediate-quiz
+            type: Quiz
+            prompt: You want to merge feature/notes into main. Which branch should be checked out?
+            options:
+            - id: a
+              text: feature/notes
+            - id: b
+              text: main
+            - id: c
+              text: Either branch; the result is identical
+          - id: git-intermediate-bug
+            type: Fix the Bug
+            prompt: Replace the full command to create feature/notes and switch to it in one step. Assume
+              it does not exist.
+            code: git branch feature/notes
+          - id: git-intermediate-fill
+            type: Complete the Code
+            prompt: You are on main. Fill only the source branch name to merge its work into main.
+            code: git merge ____
+        - track: Git
+          level: Advanced
+          title: Undo changes without rewriting trust
+          summary: Choose between reverting a shared commit and unstaging a file.
+          lesson:
+          - Undoing is context-dependent. git revert creates a new commit that reverses an earlier commit,
+            keeping history intact. For an ordinary non-merge commit already shared with others, revert
+            is usually safer than moving branch history backward with reset. Reverting a merge requires
+            additional parent-selection decisions outside this unit.
+          - git restore --staged notes.py restores the index entry from HEAD by default, leaving working-tree
+            edits in place. git restore notes.py without --staged can discard unstaged file changes; these
+            operations are not interchangeable. Always inspect git status and your diff before undoing.
+          example: 'git status
+
+            # Unstage notes.py but keep its working-tree edits:
+
+            git restore --staged notes.py
+
+            # Reverse an ordinary, already-shared commit:
+
+            git revert abc1234'
+          takeaway: Use a new revert commit for shared history; unstage separately from discarding working
+            edits.
+          id: git-advanced
+          exercises:
+          - id: git-advanced-quiz
+            type: Quiz
+            prompt: An ordinary non-merge commit is already shared. Which command creates a new commit
+              to reverse it?
+            options:
+            - id: a
+              text: git reset --hard HEAD~1
+            - id: b
+              text: git restore .
+            - id: c
+              text: git revert abc1234
+          - id: git-advanced-bug
+            type: Fix the Bug
+            prompt: Replace the full command to unstage notes.py while preserving its current working-tree
+              edits.
+            code: git restore notes.py
+          - id: git-advanced-fill
+            type: Complete the Code
+            prompt: Fill only the subcommand to reverse the shown ordinary shared commit with a new commit.
+            code: git ____ abc1234
+        progress:
+          python-beginner:
+            read: true
+            exercises:
+              python-beginner-quiz:
+                correct: true
+                independent: true
+                revealed: false
+                hintCount: 0
+              python-beginner-bug:
+                correct: true
+                independent: false
+                revealed: true
+                hintCount: 1
+              python-beginner-fill:
+                correct: true
+                independent: true
+                revealed: false
+                hintCount: 0
+        attempts:
+        - id: 00000000-0000-4000-8000-000000000001
+          exerciseId: python-beginner-quiz
+          answer: a
+          correct: true
+          assisted: false
+          createdAt: '2026-10-19T11:00:00Z'
+          feedback: Two integer values are added to produce the integer 5.
+        - id: 00000000-0000-4000-8000-000000000002
+          exerciseId: python-beginner-bug
+          answer: age + 1
+          correct: false
+          assisted: false
+          createdAt: '2026-10-19T11:01:00Z'
+          feedback: A string cannot be added directly to an integer. Convert age first.
+        - id: 00000000-0000-4000-8000-000000000003
+          exerciseId: python-beginner-bug
+          answer: int(age) + 1
+          correct: true
+          assisted: true
+          createdAt: '2026-10-19T11:02:00Z'
+          feedback: int() converts "7" to 7 before adding 1.
+        - id: 00000000-0000-4000-8000-000000000004
+          exerciseId: python-beginner-fill
+          answer: print
+          correct: true
+          assisted: false
+          createdAt: '2026-10-19T11:03:00Z'
+          feedback: print() writes the message to standard output.
+    ErrorDetail:
+      type: object
+      additionalProperties: false
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          enum:
+          - validation
+          - duplicate
+          - credentials
+          - unauthorized
+          - not-found
+          - hint-locked
+          - unavailable
+          - internal
+        message:
+          type: string
+          minLength: 1
+          description: Safe English message; no password/token, stack trace, private account data or answer
+            key.
+    Error:
+      type: object
+      additionalProperties: false
+      required:
+      - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorDetail'
+      example:
+        error:
+          code: validation
+          message: Enter a nonblank answer of at most 4000 characters.
+  responses:
+    BadRequest:
+      description: '400: Malformed JSON request.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: validation
+              message: Malformed JSON request.
+    Validation:
+      description: '422: A required field is missing or invalid.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: validation
+              message: A required field is missing or invalid.
+    UnsupportedMedia:
+      description: '415: Send application/json.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: validation
+              message: Send application/json.
+    Unauthorized:
+      description: '401: Sign in with a valid, unexpired session.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+        WWW-Authenticate:
+          schema:
+            type: string
+          example: Bearer
+          description: Bearer authentication challenge.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: unauthorized
+              message: Sign in with a valid, unexpired session.
+    Credentials:
+      description: '401: Email or password is incorrect.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+        WWW-Authenticate:
+          schema:
+            type: string
+          example: Bearer
+          description: Bearer authentication challenge.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: credentials
+              message: Email or password is incorrect.
+    Duplicate:
+      description: '409: An account already uses this email.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: duplicate
+              message: An account already uses this email.
+    NotFound:
+      description: '404: Unit or exercise not found.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: not-found
+              message: Unit or exercise not found.
+    HintLocked:
+      description: '409: Hints unlock after an incorrect submission.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: hint-locked
+              message: Hints unlock after an incorrect submission.
+    Unavailable:
+      description: '503: Service temporarily unavailable. Please retry.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: unavailable
+              message: Service temporarily unavailable. Please retry.
+    Internal:
+      description: '500: The request could not be completed.'
+      headers:
+        Cache-Control:
+          description: Private credentials/data and errors must not be cached.
+          schema:
+            type: string
+            enum:
+            - no-store
+          example: no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: internal
+              message: The request could not be completed.
+x-mock-only-service-methods:
+- simulateFailure
