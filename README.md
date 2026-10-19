@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed; the final submission audit #18 is a separate next stage and is not claimed complete.
+WeCode connects its retro React/TypeScript frontend to FastAPI and SQLAlchemy/SQLite through one typed API service. Real API mode is the complete-app default. Integration issue #17 passed independent QA and is closed. Final audit #18 verifies the technical evidence, but submission readiness is BLOCKED by the missing genuine original transcript (#4). No deployment or instructor submission is claimed.
 
 ## Run the complete app locally
 
@@ -101,6 +101,13 @@ Nine units and 27 exercises cover Python, SQL and Git at all three levels. Mark 
 - [Independent SQLite persistence QA](docs/qa/sqlite.md)
 - [Real integration architecture and engineer checks](docs/integration.md)
 - [Independent integration and observed-bug QA](docs/qa/integration.md)
+- [Submission checklist — readiness BLOCKED](docs/submission-checklist.md)
+- [Final audit results and limitations](docs/qa/final-audit.md)
+- [Verified demo guide](docs/demo-guide.md)
+- [PM](docs/team/pm.md), [software engineer](docs/team/software-engineer.md), [independent QA](docs/team/qa-engineer.md) role instructions
+- [Historical planning/source review](docs/planning.md), [curriculum review](docs/curriculum-review.md), [mock service](docs/mock-service.md)
+- [API mapping](docs/api-mapping.md), [SQLite lifecycle](docs/sqlite.md)
+- [Task issue template](.github/ISSUE_TEMPLATE/task.md), [observed user-test-bug template](.github/ISSUE_TEMPLATE/user-test-bug.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
 PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.
@@ -141,4 +148,6 @@ python3 backend/scripts/sync_curriculum.py
 
 Contract AST validation requires Node and existing frontend TypeScript dependencies as documented above; the running backend does not. Smoke needs the server at port 8000; the restart check independently launches/stops three real backend processes with an isolated temporary database/ports and removes that database afterward. It generates credentials only in memory and does not print them. Its expired-session case moves one disposable session timestamp into the past while stopped; it does not claim to wait 24 hours.
 
-Existing API behaviors run against both MemoryStorage and isolated temporary SQLite files, validating response status/headers/schemas against root OpenAPI. Additional checks cover durable state, constraints, cross-adapter concurrency, initialization/drift, rollback, ownership, expiry/revocation and process restart. One upstream Starlette/AnyIO TestClient deprecation warning is emitted; it does not affect results. No learner code executes. The real frontend client is implemented in the integration stage; this does not claim the final submission audit.
+Existing API behaviors run against both MemoryStorage and isolated temporary SQLite files, validating response status/headers/schemas against root OpenAPI. Additional checks cover durable state, constraints, cross-adapter concurrency, initialization/drift, rollback, ownership, expiry/revocation and process restart. One upstream Starlette/AnyIO TestClient deprecation warning is emitted; it does not affect results. No learner code executes. The real frontend client is implemented; final technical audit results and missing-material blockers are recorded separately.
+
+Final full-curriculum browser audit: `WECODE_AUDIT_ALL_UNITS=1 node frontend/scripts/check-integration.cjs` (with BACKEND_PYTHON pointing to the installed backend environment if needed). This covers all9 units/all27 exercises and independently authored desktop/mobile progress-row non-overlap checks; normal default harness retains the shorter integration demonstration. See docs/qa/final-audit.md for actual runs and limitations.

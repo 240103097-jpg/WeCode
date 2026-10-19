@@ -1,7 +1,7 @@
 # WeCode — Project Specification and Brainstorming Record
 
 Date: 19 October 2026. Submission target: 20 October 2026 (Asia/Almaty); exact submission time unknown.
-Status: owner-authorized frontend/backend integration stage; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; final submission audit remains the next separate stage.
+Status: owner-authorized final submission audit; retro design and product rules are preserved. The original brainstorming summary below is preserved. Current owner decisions and delegated defaults are recorded in docs/decisions.md and supersede earlier proposals. The backend now persists via SQLAlchemy/SQLite; real API mode connects the frontend; technical audit is running, but readiness is BLOCKED by missing genuine original transcript (#4).
 
 ## 1. Goal and audience
 
@@ -48,7 +48,7 @@ Proposed screens: sign up, sign in, track/level onboarding, dashboard, learning 
 
 ## 6. Technical approach and assignment process
 
-Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for persistence. The frontend with mockService is implemented. This stage authorizes the real frontend API adapter connected to SQLite-backed FastAPI; final submission audit is not claimed complete. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
+Selected direction: React/TypeScript with Vite frontend; Python/FastAPI backend; SQLAlchemy ORM and SQLite for persistence. The frontend with mockService is implemented. This stage authorizes verification of the integrated application and submission evidence only; missing genuine original transcript blocks final readiness. No deployment/submission is authorized. All frontend backend access goes through a service layer. Configure database connection through an environment variable; avoid unnecessary database-specific behavior.
 
 Follow the assignment's iteration order:
 1. Interactive frontend using mockService.

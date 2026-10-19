@@ -59,3 +59,7 @@ Corners are square. Spacing uses 4/8/12/16/24/32/40/48px. There is no glow, flic
 ## Preservation and verification
 
 Issue #20 is visual-only: curriculum, service interface, mockService, authentication handlers/flow and storage schema/key/records stay unchanged. Independent QA captures an existing account's visible baseline before edits, reruns behavior tests/typecheck/build and checks saved progress after redesign/reload. Browser coverage includes dashboard, angular learning paths, lesson/practice, authentication, onboarding, progress and settings on desktop/mobile, focus, navigation and page overflow. QA alone closes the issue after PASS.
+
+## Final audit readability correction
+
+Independent QA observed mobile Progress title/status overlap at320px (#23). The narrow layout now places title/track and statistics on separate explicit grid rows; palette, fonts and desktop composition remain unchanged. Actual browser geometric regression checks all9 rows at1440/320/375px for non-overlap/containment and page overflow, in addition to visual inspection. Owner-supplied reference image was re-inspected locally during the audit; no invented source URL or copied wording/content was added.

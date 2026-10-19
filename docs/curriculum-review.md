@@ -1,6 +1,6 @@
 # Curriculum review
 
-The frontend ships nine authored units and 27 exercises. Each unit has two short lesson sections, an example, a takeaway and one exercise of each type. Keys/hints/explanations stay in mock data, outside UI components and normal service content responses. The mock bundle necessarily contains answer keys; this is not anti-cheat enforcement.
+The authored inventory contains nine units and 27 exercises. Real mode loads public content from the server; only explicit development mock mode bundles curriculum fixtures. Each unit has two short lesson sections, an example, a takeaway and one exercise of each type. Keys/hints/explanations stay in mock data, outside UI components and normal service content responses. The mock bundle necessarily contains answer keys; this is not anti-cheat enforcement.
 
 | Track | Beginner | Intermediate | Advanced |
 | --- | --- | --- | --- |

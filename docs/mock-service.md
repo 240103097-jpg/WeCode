@@ -1,8 +1,8 @@
 # Frontend service boundary
 
-The `LearningService` interface in frontend/src/services/types.ts is the single asynchronous data/auth boundary. Components receive the interface; they do not import answer keys, storage APIs or a real network client. `mockService.ts` implements it with browser-local persistence. The app runs without a backend.
+The `LearningService` interface in frontend/src/services/types.ts is the single asynchronous data/auth boundary. Components receive the interface; they do not import answer keys, storage APIs or a real network client. `mockService.ts` implements it with browser-local persistence. Explicit development mock mode runs without a backend; the complete app defaults to the real API adapter described in api-mapping.md.
 
-## Operations for later contract derivation
+## Mock operations (frontend-stage record)
 
 | Operation | Input | Result / behavior |
 | --- | --- | --- |
@@ -27,4 +27,4 @@ Accounts store a learner profile, unit progress and append-only attempt list. Ea
 
 Mock answer rules are authored in curriculum data; ordinary Unit responses omit keys, hints and solution metadata. Text checking trims outer whitespace and normalizes CRLF only. No eval, Function constructor, interpreter or execution API handles learner input. Since this is a local frontend demo, bundled keys and local records are inspectable; no secure isolation or anti-cheat claim is made.
 
-The service adapter owns localStorage access, errors and serialization. Existing damaged data is not silently replaced. Settings offers an explicit next-call failure simulation for recoverable error verification. Production storage and server authorization belong to later stages.
+The service adapter owns localStorage access, errors and serialization. Existing damaged data is not silently replaced. Settings offers an explicit next-call failure simulation for recoverable error verification. Production storage/server authorization are now implemented in the separate backend/API adapter; this document describes only the retained development mock.
