@@ -1,10 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
-from copy import deepcopy
 import pytest
 from backend.scripts.sync_curriculum import authored
-from backend.wecode.storage import MemoryStorage
-from backend.wecode.app import create_app
-from .conftest import ContractClient
 
 
 def test_exact_curriculum_empty_state_and_no_keys(client, register):

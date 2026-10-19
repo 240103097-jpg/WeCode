@@ -1,5 +1,4 @@
 """Every test response is checked against the reviewed root operation schema."""
-from datetime import datetime, timezone
 import re
 import pytest
 from fastapi.testclient import TestClient

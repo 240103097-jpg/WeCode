@@ -76,6 +76,10 @@ def create_app(storage=None, clock=utcnow):
                                                     parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
                 except (ValueError, UnicodeDecodeError):
                     raise ApiError(400, 'validation', 'Request body must contain valid JSON.')
+            if (request.method == 'POST' and request.url.path.endswith('/hints')) or (
+                request.method == 'PUT' and request.url.path.endswith('/solution-reveal')):
+                if await request.body():
+                    raise ApiError(422, 'validation', 'This operation does not accept a request body.')
             response = await call_next(request)
         except ApiError as error:
             response = error_response(error.status, error.code, error.message)
@@ -209,7 +213,64 @@ def create_app(storage=None, clock=utcnow):
             account['progress'].setdefault(unit, {'read': False, 'exercises': {}})['read'] = True
         return Response(status_code=204)
 
-    # Practice routes are added only after curriculum QA passes.
+    def exercise(request):
+        unit = unit_id(request)
+        exercise_id = request.path_params['exerciseId']
+        if not valid('Identifier', exercise_id):
+            raise ApiError(422, 'validation', 'Exercise identifier is invalid.')
+        rule = app.state.curriculum.rule(unit, exercise_id)
+        if rule is None:
+            raise ApiError(404, 'not-found', 'This exercise is unavailable.')
+        return unit, exercise_id, rule
+
+    def exercise_state(account, unit, exercise_id):
+        progress = account['progress'].setdefault(unit, {'read': False, 'exercises': {}})
+        return progress['exercises'].setdefault(exercise_id, {
+            'correct': False, 'independent': False, 'revealed': False, 'hintCount': 0})
+
+    @app.post('/api/v1/me/units/{unitId}/exercises/{exerciseId}/submissions', status_code=201)
+    def submit(request: Request):
+        with app.state.storage.transaction() as state:
+            account, _ = current(request, state)
+            unit, exercise_id, rule = exercise(request)
+            data = body(request, 'SubmissionInput')
+            answer = data['answer'].replace('\r\n', '\n').strip()
+            if not answer or len(answer) > 4000:
+                raise ApiError(422, 'validation', 'Enter an answer between 1 and 4,000 characters.')
+            progress = exercise_state(account, unit, exercise_id)
+            correct = answer in rule['accepted']
+            assisted = progress['revealed']
+            if correct:
+                progress['correct'] = True
+                if not assisted:
+                    progress['independent'] = True
+            text = rule['explanation'] if correct else rule['incorrect']
+            account['attempts'].append({'id': str(uuid4()), 'exerciseId': exercise_id, 'answer': answer,
+                                        'correct': correct, 'assisted': assisted,
+                                        'createdAt': stamp(clock()), 'feedback': text})
+            result = {'correct': correct, 'text': text, 'assisted': assisted}
+        return result
+
+    @app.post('/api/v1/me/units/{unitId}/exercises/{exerciseId}/hints')
+    def hint(request: Request):
+        with app.state.storage.transaction() as state:
+            account, _ = current(request, state)
+            unit, exercise_id, rule = exercise(request)
+            if not any(attempt['exerciseId'] == exercise_id and not attempt['correct'] for attempt in account['attempts']):
+                raise ApiError(409, 'hint-locked', 'Try an answer first. Hints unlock after an incorrect submission.')
+            exercise_state(account, unit, exercise_id)['hintCount'] += 1
+            result = rule['hint']
+        return result
+
+    @app.put('/api/v1/me/units/{unitId}/exercises/{exerciseId}/solution-reveal')
+    def solution(request: Request):
+        with app.state.storage.transaction() as state:
+            account, _ = current(request, state)
+            unit, exercise_id, rule = exercise(request)
+            exercise_state(account, unit, exercise_id)['revealed'] = True
+            result = {'answer': rule['accepted'][0], 'explanation': rule['explanation']}
+        return result
+
     return app
 
 

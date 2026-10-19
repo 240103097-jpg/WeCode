@@ -16,7 +16,7 @@ pnpm install
 pnpm dev
 ```
 
-Preview after starting Vite: http://127.0.0.1:5173 (use the actual URL printed by Vite if occupied). The verification server is stopped after checks; run `pnpm dev` to reopen it.
+Preview after starting Vite: http://127.0.0.1:5173 (use the actual URL printed by Vite if occupied). Use `pnpm dev` to start the preview if it is not already running.
 
 On this Codex desktop installation, Node/pnpm are bundled but not on the default shell PATH. Before the commands above, this environment can use:
 
@@ -64,6 +64,7 @@ All data operations go through [the typed service boundary](docs/mock-service.md
 - [Frontend QA evidence](docs/qa/frontend.md)
 - [Retro redesign verification](docs/qa/redesign.md)
 - [Independent API contract verification](docs/qa/api-contract.md)
+- [In-memory backend architecture](docs/backend.md)
 - [Canonical GitHub backlog](https://github.com/240103097-jpg/WeCode/issues)
 
 PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.
@@ -95,3 +96,15 @@ python3 backend/scripts/sync_curriculum.py
 ```
 
 The smoke command needs the running local server and creates a disposable in-memory account, without printing its generated credentials. Only an authorized content change should regenerate the export with `--write`.
+
+Backend validation commands from the root:
+
+```sh
+/tmp/wecode-backend-venv/bin/python -m pytest backend/tests -q
+/tmp/wecode-backend-venv/bin/python -m pip check
+python3 backend/scripts/sync_curriculum.py
+/tmp/wecode-backend-venv/bin/openapi-spec-validator openapi.yml
+/tmp/wecode-backend-venv/bin/python tools/contract/validate.py
+```
+
+The final command requires Node on PATH and existing frontend TypeScript dependencies, as described above; the running backend does not. Tests exercise every operation, all 27 exercises, ownership, strict errors, secret exclusion, authentication, assisted/independent history, retries, completion, concurrent writes and failed-commit rollback. TestClient checks response statuses, headers and schemas against root OpenAPI. One upstream Starlette/AnyIO TestClient deprecation warning is currently emitted; it does not affect results.

@@ -2,7 +2,7 @@
 
 ## Owner decisions
 
-WeCode uses English UI and curriculum, a dark theme with yellow/green accents, and React + TypeScript + Vite. Python/FastAPI, SQLAlchemy and SQLite are selected for later stages, not implemented now. Detailed visual design is delegated to the agent.
+WeCode uses English UI and curriculum, a dark theme with yellow/green accents, and React + TypeScript + Vite. Python/FastAPI is implemented in the in-memory backend stage; SQLAlchemy and SQLite remain selected for the later persistence stage. Detailed visual design is delegated to the agent.
 
 Initial delivery: one short unit per Python/SQL/Git × Beginner/Intermediate/Advanced combination: 9 units, each with a lesson, Quiz, Fix the Bug and Complete the Code (27 exercises).
 
@@ -26,4 +26,10 @@ React/Vite matches the owner's selection and supports a small static mock app wi
 
 ## Deferred and missing
 
-OpenAPI, backend auth, server ownership checks and SQLite restart guarantees belong to later issues #11–18. The genuine original planning transcript remains missing (#4); the existing summary is preserved, not reconstructed. Exact October 20 submission time remains unknown.
+OpenAPI (#11) and in-memory backend auth/ownership (#12–14) have separate stage evidence; SQLite restart guarantees and live integration remain later issues #15–18. The genuine original planning transcript remains missing (#4); the existing summary is preserved, not reconstructed. Exact October 20 submission time remains unknown.
+
+## In-memory backend engineering defaults
+
+The owner authorized FastAPI with in-memory storage after contract QA. Argon2id uses argon2-cffi PasswordHasher defaults (random salt, adaptive work factor and rehash on login). The registry stores SHA-256 digests of cryptographically random 32-byte tokens; only issuance returns the bearer value. Expiry is 24 hours and logout revokes only its authenticated session. These implement the contract defaults, not the insecure mock passphrase flow.
+
+A transaction protocol separates storage from handlers. The memory adapter uses a process-local lock and copy-on-commit state to serialize operations, ensure coherent reads and roll back exceptions, including failed writes. This deliberately favors simple correctness over scaling for this academic stage. Run one worker; every learner record/session is lost on restart. No ORM, disk persistence, CORS/frontend adapter or UI changes are introduced. No contract conflict or rule change was needed.
