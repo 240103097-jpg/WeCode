@@ -13,7 +13,8 @@ from fastapi.responses import JSONResponse, Response
 from starlette.exceptions import HTTPException
 
 from .contract import DOCUMENT, normalize_input, valid
-from .storage import MemoryStorage, StorageUnavailable
+from .storage import StorageUnavailable
+from .sql_storage import SQLStorage, database_url
 from .curriculum import Curriculum
 
 
@@ -53,9 +54,9 @@ def unique_object(pairs):
 def create_app(storage=None, clock=utcnow):
     app = FastAPI(title='WeCode API', openapi_url='/openapi.json')
     app.openapi = lambda: deepcopy(DOCUMENT)
-    app.state.storage = storage if storage is not None else MemoryStorage()
+    app.state.storage = storage if storage is not None else SQLStorage(database_url())
     app.state.clock = clock
-    app.state.curriculum = Curriculum()
+    app.state.curriculum = app.state.storage.curriculum() if hasattr(app.state.storage, 'curriculum') else Curriculum()
     app.state.hasher = PasswordHasher()  # Argon2id defaults; random salt per hash.
     app.state.dummy_hash = app.state.hasher.hash(secrets.token_urlsafe(32))
 
@@ -272,6 +273,3 @@ def create_app(storage=None, clock=utcnow):
         return result
 
     return app
-
-
-app = create_app()

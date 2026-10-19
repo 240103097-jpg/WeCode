@@ -140,7 +140,7 @@ def test_practice_auth_ids_errors(client,register,action,method):
 
 def test_concurrent_submit_reveal_history_and_completion():
     fixed=datetime(2026,10,19,tzinfo=timezone.utc)
-    with ContractClient(create_app(clock=lambda:fixed)) as client:
+    with ContractClient(create_app(storage=MemoryStorage(),clock=lambda:fixed)) as client:
         result=client.post('/api/v1/auth/register',json={'name':'Concurrent Learner','email':'concurrent@example.test','password':'test-only-password'}).json()
         auth={'Authorization':'Bearer '+result['accessToken']}
         uid,eid=CASES[0]

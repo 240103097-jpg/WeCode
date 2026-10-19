@@ -53,7 +53,7 @@ Disposition: independent QA closes #14 after PASS.
 
 ## Repeatable commands and scope
 
-See [README setup](../../README.md#in-memory-backend) and [architecture](../backend.md). From the repository root, with the documented environment and Node on PATH:
+See [README setup](../../README.md#sqlite-backend) and [architecture](../backend.md). From the repository root, with the documented environment and Node on PATH:
 
 ```sh
 /tmp/wecode-backend-venv/bin/python -m pytest backend/tests -q

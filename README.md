@@ -4,7 +4,7 @@ An English learning workspace for Python, SQL and Git. Individual academic proje
 
 ## Current stage
 
-Interactive frontend with a centralized typed mockService. React, TypeScript and Vite power the frontend; Python/FastAPI powers the independently verified in-memory backend. SQLAlchemy and SQLite remain selected for later persistence. The root OpenAPI contract defines the in-memory FastAPI backend, implemented in issues #12–14, all independently QA-passed and closed. The frontend still uses mockService; no real API client or database is implemented.
+Interactive frontend with a centralized typed mockService. React, TypeScript and Vite power the frontend; Python/FastAPI powers the backend, with SQLAlchemy/SQLite persistence in this stage. The root OpenAPI contract defines the FastAPI backend; issues #15–16 add persistence after the independently verified in-memory stage. The frontend still uses mockService; no real frontend API client is implemented.
 
 ## Local development
 
@@ -70,35 +70,27 @@ All data operations go through [the typed service boundary](docs/mock-service.md
 
 PM refines issues, engineer implements and tests, independent QA verifies every criterion and alone closes after PASS. Stage order: mocked frontend → root openapi.yml → in-memory backend → ORM/SQLite → integration and thorough testing. The full original planning transcript is still needed; the summary is not a verbatim export.
 
-## In-memory backend
+## SQLite backend
 
-Python 3.13 was verified. From the repository root:
+Python 3.13, SQLAlchemy 2.0.44 and SQLite were verified. From the repository root:
 
 ```sh
 python3 -m venv /tmp/wecode-backend-venv
 /tmp/wecode-backend-venv/bin/python -m pip install -r backend/requirements-dev.txt
-/tmp/wecode-backend-venv/bin/python -m uvicorn backend.wecode.app:app --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
-/tmp/wecode-backend-venv/bin/python -m pytest backend/tests -q
+export DATABASE_URL=sqlite:////tmp/wecode.sqlite3
+/tmp/wecode-backend-venv/bin/python backend/scripts/init_db.py
+/tmp/wecode-backend-venv/bin/python -m uvicorn backend.wecode.app:create_app --factory --host 127.0.0.1 --port 8000 --workers 1 --no-access-log
 ```
 
-Run tests in another shell while the server is running. Runtime-only installations can use `backend/requirements.txt`; development requirements also install the contract validator. Dependencies follow the existing pinned Python requirements/isolated-environment convention.
+Use another shell for tests while the server runs. Runtime-only installs can use `backend/requirements.txt`. The secret-free [.env.example](.env.example) shows DATABASE_URL; export it explicitly (no automatic dotenv loading). Choose an existing parent directory; four slashes indicate an absolute SQLite file path. Missing DATABASE_URL fails startup rather than silently using temporary memory. Local DB/environment files are ignored by Git. Only file-backed SQLite is supported/tested; no other database compatibility is claimed.
 
-API base: http://127.0.0.1:8000/api/v1. Interactive API docs: http://127.0.0.1:8000/docs. The reviewed root contract is served at http://127.0.0.1:8000/openapi.json. Use HTTPS outside local development. The browser frontend remains independently mocked and is not connected to this server.
+API base: http://127.0.0.1:8000/api/v1. [Interactive API docs](http://127.0.0.1:8000/docs); root agreement at http://127.0.0.1:8000/openapi.json. Use HTTPS outside localhost. The frontend still uses mockService and is not connected to this API. Real registration needs a private 12–128 character password; the public mock passphrase grants no special access.
 
-**In-memory data is lost on restart:** accounts, sessions, preferences, attempts and progress exist only in one process. Run exactly one worker, without reload when retaining temporary data matters. No database or filesystem learner records are written. Real API registration requires a private 12–128 character password; the public mock passphrase grants no special access. Passwords use salted Argon2id hashes; opaque 256-bit session tokens expire after 24 hours and current-session logout revokes them. Never put credentials in URLs or logs. No access logging is enabled by the documented command.
+Accounts, Argon2id password hashes, preferences, hashed-token sessions, authored curriculum, lesson/exercise state and attempts now survive backend restart. Sessions retain 24-hour expiry and current-token logout revocation. No raw password or bearer token is stored in SQLite. The explicit MemoryStorage adapter remains available only for regression tests; its old restart-loss behavior does not describe the default runtime.
 
-The storage protocol exposes atomic transactions; the memory adapter serializes operations and rolls back failed writes. Domain/API code receives storage through `create_app(storage=...)`, ready for a separately authorized persistence adapter. Root contract validation supplies strict request types/fields without coercion. API tests validate actual statuses, headers and response payloads against that same contract.
+Initialization creates missing tables and inserts the exact nine existing units/27 exercises by stable IDs; repeat startup preserves learner state. Conflicting stored/authored curriculum fails explicitly for migration review. `create_all` is initial schema setup, not an automatic column-migration mechanism. See [SQLite lifecycle and constraints](docs/sqlite.md) and [backend architecture](docs/backend.md). Previously running in-memory/browser-local mock records are not automatically imported; browser storage is untouched.
 
-The server loads [backend/data/curriculum.json](backend/data/curriculum.json), a literal export of the existing frontend curriculum, including private server answer rules. It does not require Node or the frontend at runtime. Public snapshots serialize only the separately held public units. Check authoring drift without executing TypeScript:
-
-```sh
-python3 backend/scripts/sync_curriculum.py
-/tmp/wecode-backend-venv/bin/python backend/scripts/smoke.py
-```
-
-The smoke command needs the running local server and creates a disposable in-memory account, without printing its generated credentials. Only an authorized content change should regenerate the export with `--write`.
-
-Backend validation commands from the root:
+Verification commands:
 
 ```sh
 /tmp/wecode-backend-venv/bin/python -m pytest backend/tests -q
@@ -106,18 +98,10 @@ Backend validation commands from the root:
 python3 backend/scripts/sync_curriculum.py
 /tmp/wecode-backend-venv/bin/openapi-spec-validator openapi.yml
 /tmp/wecode-backend-venv/bin/python tools/contract/validate.py
+/tmp/wecode-backend-venv/bin/python backend/scripts/smoke.py
+/tmp/wecode-backend-venv/bin/python backend/scripts/check_restart.py
 ```
 
-The final command requires Node on PATH and existing frontend TypeScript dependencies, as described above; the running backend does not. Tests exercise every operation, all 27 exercises, ownership, strict errors, secret exclusion, authentication, assisted/independent history, retries, completion, concurrent writes and failed-commit rollback. TestClient checks response statuses, headers and schemas against root OpenAPI. One upstream Starlette/AnyIO TestClient deprecation warning is currently emitted; it does not affect results.
+Contract AST validation requires Node and existing frontend TypeScript dependencies as documented above; the running backend does not. Smoke needs the server at port 8000; the restart check independently launches/stops three real backend processes with an isolated temporary database/ports and removes that database afterward. It generates credentials only in memory and does not print them. Its expired-session case moves one disposable session timestamp into the past while stopped; it does not claim to wait 24 hours.
 
-## SQLite persistence stage
-
-SQLAlchemy is pinned in the backend requirements. Account/session/preferences foundation is issue #15; the complete curriculum/learning adapter and runtime switch are #16. At the #15 gate the runtime remains in-memory, and the partial SQL adapter rejects learning writes rather than silently discard them. See [SQLite setup and lifecycle](docs/sqlite.md).
-
-```sh
-export DATABASE_URL=sqlite:////tmp/wecode.sqlite3
-/tmp/wecode-backend-venv/bin/python backend/scripts/init_db.py
-/tmp/wecode-backend-venv/bin/python -m pytest backend/tests/test_auth.py backend/tests/test_sql_accounts.py -q
-```
-
-The example [.env.example](.env.example) contains no credentials; export its value explicitly (there is no automatic dotenv loading). SQLite files and local environment files are ignored by Git. Only file-backed SQLite and Python 3.13 are verified; other database compatibility is not claimed.
+Existing API behaviors run against both MemoryStorage and isolated temporary SQLite files, validating response status/headers/schemas against root OpenAPI. Additional checks cover durable state, constraints, cross-adapter concurrency, initialization/drift, rollback, ownership, expiry/revocation and process restart. One upstream Starlette/AnyIO TestClient deprecation warning is emitted; it does not affect results. No learner code executes. No real frontend client, UI change or unrelated feature is included.

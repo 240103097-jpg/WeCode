@@ -8,8 +8,10 @@ from contextlib import contextmanager
 from copy import deepcopy
 from datetime import datetime, timezone
 import os
+import json
+from pathlib import Path
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, String, create_engine, delete, event, select, update
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, ForeignKeyConstraint, Integer, JSON, String, UniqueConstraint, create_engine, delete, event, select, update
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
@@ -61,6 +63,63 @@ class AuthSession(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
 
+class AuthoredUnit(Base):
+    __tablename__ = 'curriculum_units'
+    id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
+    track: Mapped[str] = mapped_column(String, nullable=False)
+    level: Mapped[str] = mapped_column(String, nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False)
+    __table_args__ = (UniqueConstraint('track', 'level'), CheckConstraint(TRACK_CHECK), CheckConstraint(LEVEL_CHECK))
+
+
+class AuthoredExercise(Base):
+    __tablename__ = 'curriculum_exercises'
+    id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    unit_id: Mapped[str] = mapped_column(ForeignKey('curriculum_units.id'), nullable=False)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False)
+    rule: Mapped[dict] = mapped_column(JSON, nullable=False)
+    __table_args__ = (UniqueConstraint('unit_id', 'id'), UniqueConstraint('unit_id', 'position'))
+
+
+class LessonState(Base):
+    __tablename__ = 'lesson_state'
+    account_id: Mapped[str] = mapped_column(ForeignKey('accounts.id'), primary_key=True)
+    unit_id: Mapped[str] = mapped_column(ForeignKey('curriculum_units.id'), primary_key=True)
+    read: Mapped[bool] = mapped_column(Boolean(create_constraint=True), nullable=False)
+
+
+class ExerciseState(Base):
+    __tablename__ = 'exercise_state'
+    account_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    unit_id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    exercise_id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    correct: Mapped[bool] = mapped_column(Boolean(create_constraint=True), nullable=False)
+    independent: Mapped[bool] = mapped_column(Boolean(create_constraint=True), nullable=False)
+    revealed: Mapped[bool] = mapped_column(Boolean(create_constraint=True), nullable=False)
+    hint_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    __table_args__ = (
+        ForeignKeyConstraint(['account_id', 'unit_id'], ['lesson_state.account_id', 'lesson_state.unit_id']),
+        ForeignKeyConstraint(['unit_id', 'exercise_id'], ['curriculum_exercises.unit_id', 'curriculum_exercises.id']),
+        CheckConstraint('hint_count >= 0'), CheckConstraint('NOT independent OR correct'),
+    )
+
+
+class SavedAttempt(Base):
+    __tablename__ = 'attempts'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    account_id: Mapped[str] = mapped_column(ForeignKey('accounts.id'), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    exercise_id: Mapped[str] = mapped_column(ForeignKey('curriculum_exercises.id'), nullable=False)
+    answer: Mapped[str] = mapped_column(String(4000), nullable=False)
+    correct: Mapped[bool] = mapped_column(Boolean(create_constraint=True), nullable=False)
+    assisted: Mapped[bool] = mapped_column(Boolean(create_constraint=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    feedback: Mapped[str] = mapped_column(String, nullable=False)
+    __table_args__ = (UniqueConstraint('account_id', 'sequence'), CheckConstraint('sequence > 0'), CheckConstraint('length(answer) BETWEEN 1 AND 4000'))
+
+
 def database_url():
     value = os.environ.get('DATABASE_URL')
     if not value:
@@ -95,6 +154,7 @@ class SQLStorage:
         except IntegrityError:
             # Another initializer already inserted the singleton row.
             pass
+        self._initialize_curriculum()
 
     def close(self):
         self.engine.dispose()
@@ -128,13 +188,72 @@ class SQLStorage:
         db.execute(delete(AuthSession).where(AuthSession.token_hash.not_in(list(state.sessions))))
         self._save_learning(db, state)
 
+    def _initialize_curriculum(self):
+        data = json.loads((Path(__file__).resolve().parents[1] / 'data/curriculum.json').read_text())
+        with Session(self.engine) as db, db.begin():
+            db.execute(update(TransactionGuard).where(TransactionGuard.id == 1).values(epoch=TransactionGuard.epoch + 1))
+            for index, unit in enumerate(data['units']):
+                payload = {key: value for key, value in unit.items() if key != 'exercises'}
+                row = db.get(AuthoredUnit, unit['id'])
+                if row is None:
+                    db.add(AuthoredUnit(id=unit['id'], position=index, track=unit['track'], level=unit['level'], payload=payload))
+                elif row.payload != payload or row.position != index or row.track != unit['track'] or row.level != unit['level']:
+                    raise RuntimeError('Stored curriculum differs from authored content; explicit migration required.')
+            db.flush()
+            for unit in data['units']:
+                for index, exercise in enumerate(unit['exercises']):
+                    rule = data['answerRules'][exercise['id']]
+                    row = db.get(AuthoredExercise, exercise['id'])
+                    if row is None:
+                        db.add(AuthoredExercise(id=exercise['id'], unit_id=unit['id'], position=index, payload=exercise, rule=rule))
+                    elif row.unit_id != unit['id'] or row.position != index or row.payload != exercise or row.rule != rule:
+                        raise RuntimeError('Stored curriculum differs from authored content; explicit migration required.')
+            db.flush()
+            if len(list(db.scalars(select(AuthoredUnit)))) != 9 or len(list(db.scalars(select(AuthoredExercise)))) != 27:
+                raise RuntimeError('Unexpected curriculum inventory; explicit migration required.')
+
+    def curriculum(self):
+        from .curriculum import Curriculum
+        with Session(self.engine) as db, db.begin():
+            units = []
+            rules = {}
+            for row in db.scalars(select(AuthoredUnit).order_by(AuthoredUnit.position)):
+                unit = deepcopy(row.payload)
+                unit['exercises'] = []
+                for exercise in db.scalars(select(AuthoredExercise).where(AuthoredExercise.unit_id == row.id).order_by(AuthoredExercise.position)):
+                    unit['exercises'].append(deepcopy(exercise.payload))
+                    rules[exercise.id] = deepcopy(exercise.rule)
+                units.append(unit)
+        return Curriculum({'units': units, 'answerRules': rules})
+
     def _load_learning(self, db, state):
-        # Account foundation only. The dependent #16 adds durable learning entities.
-        pass
+        for row in db.scalars(select(LessonState)):
+            state.accounts[row.account_id]['progress'][row.unit_id] = {'read': row.read, 'exercises': {}}
+        for row in db.scalars(select(ExerciseState)):
+            state.accounts[row.account_id]['progress'][row.unit_id]['exercises'][row.exercise_id] = {
+                'correct': row.correct, 'independent': row.independent, 'revealed': row.revealed, 'hintCount': row.hint_count}
+        for row in db.scalars(select(SavedAttempt).order_by(SavedAttempt.account_id, SavedAttempt.sequence)):
+            state.accounts[row.account_id]['attempts'].append({
+                'id': row.id, 'exerciseId': row.exercise_id, 'answer': row.answer, 'correct': row.correct,
+                'assisted': row.assisted, 'createdAt': row.created_at.replace(tzinfo=timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z'),
+                'feedback': row.feedback})
 
     def _save_learning(self, db, state):
-        if any(account['progress'] or account['attempts'] for account in state.accounts.values()):
-            raise StorageUnavailable('Learning persistence is not initialized at this foundation gate.')
+        for account_id, account in state.accounts.items():
+            for unit_id, progress in account['progress'].items():
+                db.merge(LessonState(account_id=account_id, unit_id=unit_id, read=progress['read']))
+        db.flush()
+        for account_id, account in state.accounts.items():
+            for unit_id, progress in account['progress'].items():
+                for exercise_id, exercise in progress['exercises'].items():
+                    db.merge(ExerciseState(account_id=account_id, unit_id=unit_id, exercise_id=exercise_id,
+                                           correct=exercise['correct'], independent=exercise['independent'],
+                                           revealed=exercise['revealed'], hint_count=exercise['hintCount']))
+            for index, attempt in enumerate(account['attempts'], 1):
+                db.merge(SavedAttempt(id=attempt['id'], account_id=account_id, sequence=index, exercise_id=attempt['exerciseId'],
+                                      answer=attempt['answer'], correct=attempt['correct'], assisted=attempt['assisted'],
+                                      created_at=datetime.fromisoformat(attempt['createdAt'].replace('Z', '+00:00')).astimezone(timezone.utc).replace(tzinfo=None),
+                                      feedback=attempt['feedback']))
 
     @contextmanager
     def transaction(self):

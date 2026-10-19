@@ -79,7 +79,7 @@ def test_hashes_expiry_restart_and_password_whitespace():
         assert client.post('/api/v1/auth/login',json={'email':data['email'], 'password':data['password'].strip()}).status_code == 401
         now += timedelta(hours=24)
         assert client.get('/api/v1/me',headers=auth).status_code == 401
-    with ContractClient(create_app()) as restarted:
+    with ContractClient(create_app(storage=MemoryStorage())) as restarted:
         assert restarted.get('/api/v1/me',headers=auth).status_code == 401
         assert restarted.post('/api/v1/auth/login',json={'email':data['email'],'password':data['password']}).status_code == 401
 

@@ -13,6 +13,8 @@ def test_database_config_required(monkeypatch):
     monkeypatch.delenv('DATABASE_URL',raising=False)
     with pytest.raises(RuntimeError,match='DATABASE_URL'):
         database_url()
+    with pytest.raises(RuntimeError,match='DATABASE_URL'):
+        create_app()
     monkeypatch.setenv('DATABASE_URL','sqlite:////tmp/example.sqlite3')
     assert database_url() == 'sqlite:////tmp/example.sqlite3'
 

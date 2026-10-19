@@ -43,8 +43,8 @@ def client(request, tmp_path):
 
 
 def pytest_generate_tests(metafunc):
-    # #15 gates account foundation only; #16 expands this to all API suites.
-    if 'client' in metafunc.fixturenames and metafunc.module.__name__.endswith('test_auth'):
+    # Run the unchanged API behaviors against both adapters; every SQLite DB is isolated.
+    if 'client' in metafunc.fixturenames:
         metafunc.parametrize('client', ['memory', 'sqlite'], indirect=True)
 
 

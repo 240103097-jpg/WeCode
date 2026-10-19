@@ -6,8 +6,8 @@ from .contract import valid
 
 
 class Curriculum:
-    def __init__(self):
-        data = json.loads((Path(__file__).resolve().parents[1] / 'data/curriculum.json').read_text())
+    def __init__(self, data=None):
+        data = data if data is not None else json.loads((Path(__file__).resolve().parents[1] / 'data/curriculum.json').read_text())
         self._units = data['units']
         self._rules = data['answerRules']
         assert len(self._units) == 9
