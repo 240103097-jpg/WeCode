@@ -27,6 +27,7 @@ export PATH="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node
 This fallback is specific to this desktop installation; other machines should install Node.js and pnpm normally.
 
 ```sh
+pnpm contrast
 pnpm typecheck
 pnpm test
 pnpm build
